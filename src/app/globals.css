@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bc-bg:      #090e1a;
+  --bc-surface: #0f1729;
+  --bc-card:    #111d35;
+  --bc-border:  #1a2744;
+  --bc-blue:    #3b82f6;
+  --bc-cyan:    #22d3ee;
+  --bc-wa:      #22c55e;
+  --bc-amber:   #f59e0b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bc-bg);
+  color: #e2e8f0;
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.bengali {
+  font-family: 'Hind Siliguri', sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bc-bg); }
+::-webkit-scrollbar-thumb { background: var(--bc-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bc-blue); }
+
+/* Grid bg */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(26,39,68,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26,39,68,0.5) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Glow effects */
+.blue-glow   { box-shadow: 0 0 24px rgba(59,130,246,0.3); }
+.cyan-glow   { box-shadow: 0 0 24px rgba(34,211,238,0.3); }
+.card-hover  { transition: all 0.3s ease; }
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(59,130,246,0.18);
+  border-color: rgba(59,130,246,0.4) !important;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #3b82f6 0%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Shimmer loading */
+.shimmer {
+  background: linear-gradient(90deg,
+    var(--bc-card) 25%,
+    var(--bc-border) 50%,
+    var(--bc-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* WA button pulse */
+@keyframes waPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+  70%  { box-shadow: 0 0 0 16px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+
+.wa-pulse { animation: waPulse 2.2s infinite; }
+
+/* Fade up animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up { animation: fadeUp 0.7s ease forwards; }
+.fade-up-d1 { animation: fadeUp 0.7s 0.15s ease forwards; opacity: 0; }
+.fade-up-d2 { animation: fadeUp 0.7s 0.30s ease forwards; opacity: 0; }
+.fade-up-d3 { animation: fadeUp 0.7s 0.45s ease forwards; opacity: 0; }
+.fade-up-d4 { animation: fadeUp 0.7s 0.60s ease forwards; opacity: 0; }
+
+/* Badge colors */
+.badge-new  { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+.badge-used { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+.badge-accessories { background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+.badge-services    { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
