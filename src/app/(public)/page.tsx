@@ -1,33 +1,111 @@
+'use client'
+
+export const dynamic = 'force-dynamic'
+
+import { useEffect, useState, Suspense } from 'react'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase'
+import { supabase, Product } from '@/lib/supabase'
 import ProductCard from '@/components/ProductCard'
 import PolicyNotice from '@/components/PolicyNotice'
 import { BUSINESS, SERVICES } from '@/lib/constants'
-import { Product } from '@/lib/supabase'
 
-async function getFeaturedProducts(): Promise<Product[]> {
-  try {
-    const { data } = await supabase
-      .from('products')
-      .select('*')
-      .eq('featured', true)
-      .eq('in_stock', true)
-      .order('created_at', { ascending: false })
-      .limit(6)
-    return (data as Product[]) ?? []
-  } catch {
-    return []
-  }
+// ─── Category sort order ─────────────────────────────────
+const CAT_ORDER: Record<string, number> = { new: 0, used: 1, accessories: 2, services: 3 }
+
+function sortByCategory(products: Product[]): Product[] {
+  return [...products].sort(
+    (a, b) => (CAT_ORDER[a.category] ?? 99) - (CAT_ORDER[b.category] ?? 99)
+  )
 }
 
-export default async function HomePage() {
-  const featured = await getFeaturedProducts()
+// ─── Skeleton ────────────────────────────────────────────
+function FeaturedSkeleton() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {[...Array(6)].map((_, i) => (
+        <div key={i} className="bg-bc-card border border-bc-border rounded-2xl overflow-hidden">
+          <div className="shimmer h-44" />
+          <div className="p-4 space-y-3">
+            <div className="shimmer h-4 rounded w-3/4" />
+            <div className="shimmer h-3 rounded w-full" />
+            <div className="shimmer h-3 rounded w-2/3" />
+            <div className="shimmer h-9 rounded-xl" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ─── Featured products — realtime client component ────────
+function FeaturedProducts() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading]   = useState(true)
+
+  async function fetchFeatured() {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('featured', true)   // only featured=true
+        // NOTE: in_stock NOT filtered — out-of-stock shown with badge
+      if (error) throw error
+      setProducts(sortByCategory((data as Product[]) ?? []))
+    } catch {
+      // Only use static fallback on very first load failure
+      setProducts(prev => prev.length === 0 ? STATIC_FALLBACK as unknown as Product[] : prev)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    // Initial fetch
+    fetchFeatured()
+
+    // ── Realtime subscription ──────────────────────────
+    // Any INSERT / UPDATE / DELETE on products table
+    // triggers an instant re-fetch → homepage always in sync
+    const channel = supabase
+      .channel('homepage-featured')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'products' },
+        () => {
+          fetchFeatured()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  if (loading) return <FeaturedSkeleton />
+
+  if (products.length === 0) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {STATIC_FALLBACK.map((p, i) => <StaticProductCard key={i} product={p} />)}
+      </div>
+    )
+  }
 
   return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {products.map(p => <ProductCard key={p.id} product={p} />)}
+    </div>
+  )
+}
+
+// ─── Page ────────────────────────────────────────────────
+export default function HomePage() {
+  return (
     <>
-      {/* ─── HERO ─────────────────────────────────────────── */}
+      {/* ─── HERO ───────────────────────────────────────── */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden grid-bg">
-        {/* Glow blobs */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-bc-blue/10 blur-[100px]" />
           <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-bc-cyan/8 blur-[90px]" />
@@ -35,13 +113,10 @@ export default async function HomePage() {
 
         <div className="relative max-w-7xl mx-auto px-4 py-20 w-full">
           <div className="max-w-3xl">
-            {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-bc-blue/10 border border-bc-blue/25 rounded-full px-4 py-1.5 text-bc-blue text-sm font-medium mb-6 fade-up">
-              <span className="w-2 h-2 rounded-full bg-bc-cyan animate-pulse"></span>
+              <span className="w-2 h-2 rounded-full bg-bc-cyan animate-pulse" />
               Khulna's Trusted Tech Partner
             </div>
-
-            {/* Headline */}
             <h1 className="font-outfit font-extrabold text-5xl sm:text-6xl lg:text-7xl text-white leading-[1.05] mb-4 fade-up-d1">
               Best Laptops
               <br />
@@ -54,7 +129,6 @@ export default async function HomePage() {
               নতুন ও জাপান/সিঙ্গাপুর আমদানিকৃত রিফার্বিশড ল্যাপটপ | মেরামত ও আপগ্রেড সার্ভিস
             </p>
 
-            {/* CTAs */}
             <div className="flex flex-wrap gap-4 fade-up-d3">
               <Link
                 href="/products"
@@ -76,7 +150,6 @@ export default async function HomePage() {
               </a>
             </div>
 
-            {/* Phone chips */}
             <div className="flex flex-wrap gap-3 mt-5 fade-up-d4">
               <a href={`tel:${BUSINESS.phone1}`} className="bengali text-bc-cyan text-sm font-medium hover:text-white transition-colors">
                 📞 {BUSINESS.phone1}
@@ -89,18 +162,17 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* Bottom gradient fade */}
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-bc-bg to-transparent" />
       </section>
 
-      {/* ─── STATS ROW ────────────────────────────────────── */}
+      {/* ─── STATS ROW ──────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 -mt-8 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {[
-            { value: BUSINESS.fbFollowers, label: 'Facebook Followers', icon: '👥' },
-            { value: BUSINESS.fbRating,    label: 'Facebook Rating',    icon: '⭐' },
-            { value: 'Japan/SG',           label: 'Imported Laptops',   icon: '✈️' },
-            { value: BUSINESS.yearsInBusiness + ' Years', label: 'In Business', icon: '🏆' },
+            { value: BUSINESS.fbFollowers,                label: 'Facebook Followers', icon: '👥' },
+            { value: BUSINESS.fbRating,                   label: 'Facebook Rating',    icon: '⭐' },
+            { value: 'Japan/SG',                          label: 'Imported Laptops',   icon: '✈️' },
+            { value: BUSINESS.yearsInBusiness + ' Years', label: 'In Business',        icon: '🏆' },
           ].map((s, i) => (
             <div key={i} className="bg-bc-card border border-bc-border rounded-2xl p-4 text-center blue-glow">
               <div className="text-2xl mb-1">{s.icon}</div>
@@ -111,12 +183,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ─── POLICY NOTICE ────────────────────────────────── */}
+      {/* ─── POLICY NOTICE ──────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 mt-10">
         <PolicyNotice />
       </section>
 
-      {/* ─── USED LAPTOPS PROMO ───────────────────────────── */}
+      {/* ─── USED LAPTOPS PROMO ─────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 mt-16">
         <div className="relative bg-gradient-to-r from-amber-500/10 to-bc-card border border-amber-500/20 rounded-3xl p-8 overflow-hidden">
           <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/5 rounded-full blur-3xl" />
@@ -142,7 +214,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ─── FEATURED PRODUCTS ────────────────────────────── */}
+      {/* ─── FEATURED PRODUCTS ──────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 mt-16">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -156,21 +228,12 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        {featured.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {featured.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
-        ) : (
-          /* Static fallback if DB not connected */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {STATIC_PRODUCTS.map((p, i) => (
-              <StaticProductCard key={i} product={p} />
-            ))}
-          </div>
-        )}
+        <Suspense fallback={<FeaturedSkeleton />}>
+          <FeaturedProducts />
+        </Suspense>
       </section>
 
-      {/* ─── SERVICES ─────────────────────────────────────── */}
+      {/* ─── SERVICES ───────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 mt-20">
         <div className="text-center mb-10">
           <h2 className="font-outfit font-bold text-2xl sm:text-3xl text-white mb-2">Our Services</h2>
@@ -199,7 +262,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ─── CONTACT CTA ──────────────────────────────────── */}
+      {/* ─── CONTACT CTA ────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 mt-20 mb-4">
         <div className="relative bg-gradient-to-br from-bc-blue/15 to-bc-cyan/10 border border-bc-blue/25 rounded-3xl p-10 text-center overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
@@ -241,24 +304,24 @@ export default async function HomePage() {
   )
 }
 
-// ─── Static fallback cards ──────────────────────────────
-const STATIC_PRODUCTS = [
-  { name: 'Lenovo IdeaPad 3',    category: 'new',  specs: 'Core i5 12th Gen | 8GB RAM | 512GB SSD', price: '৳42,000', icon: '💻' },
-  { name: 'HP EliteBook 840 G3', category: 'used', specs: 'Core i5 6th Gen | 8GB RAM | 256GB SSD',   price: '৳20,000', icon: '🔄' },
-  { name: 'Dell Latitude E7470', category: 'used', specs: 'Core i5 6th Gen | 8GB RAM | 256GB SSD',   price: '৳22,000', icon: '🔄' },
-  { name: 'Asus VivoBook 15',    category: 'new',  specs: 'Core i3 12th Gen | 8GB RAM | 256GB SSD', price: '৳38,500', icon: '💻' },
-  { name: 'Lenovo ThinkPad T460',category: 'used', specs: 'Core i5 6th Gen | 8GB RAM | 256GB SSD',   price: '৳18,500', icon: '🔄' },
-  { name: 'Mechanical Keyboard', category: 'accessories', specs: 'RGB | TKL | Blue Switch',           price: '৳1,500',  icon: '⌨️' },
+// ─── Static fallback data ────────────────────────────────
+const STATIC_FALLBACK = [
+  { name: 'Lenovo IdeaPad 3',     category: 'new',         specs: 'Core i5 12th Gen | 8GB RAM | 512GB SSD', price: '৳42,000', icon: '💻', in_stock: true },
+  { name: 'Asus VivoBook 15',    category: 'new',         specs: 'Core i3 12th Gen | 8GB RAM | 256GB SSD', price: '৳38,500', icon: '💻', in_stock: true },
+  { name: 'HP EliteBook 840 G3', category: 'used',        specs: 'Core i5 6th Gen | 8GB RAM | 256GB SSD',  price: '৳20,000', icon: '🔄', in_stock: true },
+  { name: 'Dell Latitude E7470', category: 'used',        specs: 'Core i5 6th Gen | 8GB RAM | 256GB SSD',  price: '৳22,000', icon: '🔄', in_stock: true },
+  { name: 'Lenovo ThinkPad T460',category: 'used',        specs: 'Core i5 6th Gen | 8GB RAM | 256GB SSD',  price: '৳18,500', icon: '🔄', in_stock: true },
+  { name: 'Mechanical Keyboard', category: 'accessories', specs: 'RGB | TKL | Blue Switch',                price: '৳1,500',  icon: '⌨️', in_stock: true },
 ]
 
-const BADGE: Record<string,string> = {
-  new: 'badge-new', used: 'badge-used', accessories: 'badge-accessories'
+const BADGE: Record<string, string> = {
+  new: 'badge-new', used: 'badge-used', accessories: 'badge-accessories',
 }
-const CAT_LABEL: Record<string,string> = {
-  new: 'New Laptop', used: 'Used Laptop', accessories: 'Accessories'
+const CAT_LABEL: Record<string, string> = {
+  new: 'New Laptop', used: 'Used Laptop', accessories: 'Accessories',
 }
 
-function StaticProductCard({ product }: { product: typeof STATIC_PRODUCTS[0] }) {
+function StaticProductCard({ product }: { product: typeof STATIC_FALLBACK[0] }) {
   const waMsg = encodeURIComponent(`আমি ${product.name} সম্পর্কে জানতে চাই`)
   return (
     <div className="card-hover bg-bc-card border border-bc-border rounded-2xl overflow-hidden flex flex-col">
@@ -267,20 +330,33 @@ function StaticProductCard({ product }: { product: typeof STATIC_PRODUCTS[0] }) 
         <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE[product.category]}`}>
           {CAT_LABEL[product.category]}
         </span>
+        {!product.in_stock && (
+          <div className="absolute inset-0 bg-bc-bg/70 flex items-center justify-center">
+            <span className="bengali text-red-400 font-bold text-sm bg-bc-bg/80 px-3 py-1 rounded-full border border-red-500/30">
+              স্টক নেই
+            </span>
+          </div>
+        )}
       </div>
       <div className="p-4 flex flex-col flex-1">
         <h3 className="font-semibold text-white text-base mb-1">{product.name}</h3>
         <p className="text-slate-400 text-xs mb-3 flex-1">{product.specs}</p>
         <div className="font-bold text-lg gradient-text mb-3">{product.price}</div>
         <div className="flex gap-2">
-          <a href={`https://wa.me/8801991944447?text=${waMsg}`} target="_blank" rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-1.5 bg-bc-wa hover:bg-green-400 text-white text-sm font-semibold py-2.5 rounded-xl transition-all">
+          <a
+            href={`https://wa.me/8801991944447?text=${waMsg}`}
+            target="_blank" rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center gap-1.5 bg-bc-wa hover:bg-green-400 text-white text-sm font-semibold py-2.5 rounded-xl transition-all"
+          >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
             </svg>
             WhatsApp
           </a>
-          <a href="tel:01991-944447" className="px-3 py-2.5 rounded-xl border border-bc-border hover:border-bc-blue/50 text-slate-400 hover:text-bc-blue transition-all">
+          <a
+            href="tel:01991-944447"
+            className="px-3 py-2.5 rounded-xl border border-bc-border hover:border-bc-blue/50 text-slate-400 hover:text-bc-blue transition-all"
+          >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
