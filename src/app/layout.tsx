@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: 'Bangalee Computers | বাঙালী কম্পিউটার্স — Khulna',
   description: 'Bangalee Computers — Your Technology Partner in Khulna. New & used laptops, accessories, repair services. Japan/Singapore imported refurbished laptops. Call: 01991-944447',
   keywords: 'laptop shop khulna, used laptop khulna, refurbished laptop bangladesh, computer shop khulna, বাঙালী কম্পিউটার্স',
+  icons: {
+    icon:  '/favicon.png',
+    apple: '/favicon.png',
+  },
   openGraph: {
     title: 'Bangalee Computers | বাঙালী কম্পিউটার্স',
     description: 'Your Technology Partner in Khulna, Bangladesh',
