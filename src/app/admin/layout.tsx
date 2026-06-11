@@ -9,7 +9,7 @@ import type { User } from '@supabase/supabase-js'
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router   = useRouter()
   const pathname = usePathname()
-  const [user, setUser]   = useState<User | null>(null)
+  const [user, setUser]       = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -46,8 +46,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user) return null
 
   const navItems = [
-    { href: '/admin/messages', label: 'Messages',  icon: '💬' },
-    { href: '/admin/products', label: 'Products',  icon: '💻' },
+    { href: '/admin/messages', label: 'Messages', icon: '💬' },
+    { href: '/admin/products', label: 'Products', icon: '💻' },
   ]
 
   return (
@@ -56,7 +56,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className="w-56 bg-bc-surface border-r border-bc-border flex flex-col">
         <div className="p-5 border-b border-bc-border">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-bc-blue to-bc-cyan flex items-center justify-center text-white font-black text-xs">BC</div>
+            <img
+              src="/logo.png"
+              alt="Bangalee Computers"
+              className="w-9 h-9 rounded-lg object-cover"
+            />
             <div>
               <div className="text-white text-xs font-bold">Admin Panel</div>
               <div className="text-slate-500 text-[10px]">Bangalee Computers</div>
