@@ -14,9 +14,11 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-bc-blue to-bc-cyan flex items-center justify-center text-white font-black text-sm shadow-lg group-hover:scale-110 transition-transform">
-            BC
-          </div>
+          <img
+            src="/logo.png"
+            alt="Bangalee Computers"
+            className="w-9 h-9 rounded-lg object-cover group-hover:scale-110 transition-transform shadow-lg"
+          />
           <div className="leading-none">
             <div className="font-outfit font-bold text-white text-sm tracking-wide">Bangalee</div>
             <div className="bengali text-xs text-bc-cyan font-medium">কম্পিউটার্স</div>
