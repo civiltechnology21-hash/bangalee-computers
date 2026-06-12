@@ -13,17 +13,6 @@ const TABS = [
   { key: 'accessories', label: 'আনুষাঙ্গিক',    en: 'Accessories' },
 ]
 
-const FALLBACK: Product[] = [
-  { id:'1', name:'Lenovo IdeaPad 3',     category:'new',         specs:'Core i5 12th Gen | 8GB RAM | 512GB SSD | 15.6" FHD', price:'৳42,000', in_stock:true, featured:true,  created_at:'', image_url:'' },
-  { id:'2', name:'Asus VivoBook 15',    category:'new',         specs:'Core i3 12th Gen | 8GB RAM | 256GB SSD | 15.6" FHD', price:'৳38,500', in_stock:true, featured:true,  created_at:'', image_url:'' },
-  { id:'3', name:'HP 15s',              category:'new',         specs:'AMD Ryzen 5 | 8GB RAM | 512GB SSD | 15.6" FHD',      price:'৳45,000', in_stock:true, featured:true,  created_at:'', image_url:'' },
-  { id:'4', name:'Dell Latitude E7470', category:'used',        specs:'Core i5 6th Gen | 8GB RAM | 256GB SSD | 14" FHD',    price:'৳22,000', in_stock:true, featured:true,  created_at:'', image_url:'' },
-  { id:'5', name:'HP EliteBook 840 G3', category:'used',        specs:'Core i5 6th Gen | 8GB RAM | 256GB SSD | 14" FHD',    price:'৳20,000', in_stock:true, featured:true,  created_at:'', image_url:'' },
-  { id:'6', name:'Lenovo ThinkPad T460',category:'used',        specs:'Core i5 6th Gen | 8GB RAM | 256GB SSD | 14" HD',     price:'৳18,500', in_stock:true, featured:true,  created_at:'', image_url:'' },
-  { id:'7', name:'Mechanical Keyboard', category:'accessories', specs:'RGB Backlit | TKL Layout | Blue Switch',              price:'৳1,500',  in_stock:true, featured:false, created_at:'', image_url:'' },
-  { id:'8', name:'Wireless Mouse',      category:'accessories', specs:'2.4GHz Wireless | Ergonomic | DPI Adjustable',       price:'৳800',    in_stock:true, featured:false, created_at:'', image_url:'' },
-]
-
 export default function ProductsClient() {
   const searchParams = useSearchParams()
   const initCat = searchParams.get('cat') ?? 'all'
@@ -41,9 +30,9 @@ export default function ProductsClient() {
           .from('products')
           .select('*')
           .order('created_at', { ascending: false })
-        setProducts((data as Product[]) ?? FALLBACK)
+        setProducts((data as Product[]) ?? [])
       } catch {
-        setProducts(FALLBACK)
+        setProducts([])
       } finally {
         setLoading(false)
       }
