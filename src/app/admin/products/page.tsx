@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { supabase, Product } from '@/lib/supabase'
 
 const EMPTY: Omit<Product, 'id' | 'created_at'> = {
@@ -15,6 +15,22 @@ const CATS = [
   { v: 'services',    l: 'Services' },
 ]
 
+const BADGE: Record<string, string> = {
+  new: 'badge-new', used: 'badge-used', accessories: 'badge-accessories', services: 'badge-services'
+}
+
+// Auto-expanding textarea hook
+function useAutoResize(value: string) {
+  const ref = useRef<HTMLTextAreaElement>(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = Math.min(el.scrollHeight, 240) + 'px'
+  }, [value])
+  return ref
+}
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading]   = useState(true)
@@ -24,6 +40,8 @@ export default function AdminProductsPage() {
   const [saving, setSaving]     = useState(false)
   const [err, setErr]           = useState('')
   const [catFilter, setCatFilter] = useState('all')
+
+  const descRef = useAutoResize(form.name_bn ?? '')
 
   const load = async () => {
     setLoading(true)
@@ -36,8 +54,11 @@ export default function AdminProductsPage() {
 
   const openAdd = () => { setForm(EMPTY); setEditId(null); setErr(''); setModal('add') }
   const openEdit = (p: Product) => {
-    setForm({ name: p.name, name_bn: p.name_bn ?? '', category: p.category, specs: p.specs ?? '',
-      price: p.price ?? '', image_url: p.image_url ?? '', in_stock: p.in_stock, featured: p.featured })
+    setForm({
+      name: p.name, name_bn: p.name_bn ?? '', category: p.category,
+      specs: p.specs ?? '', price: p.price ?? '', image_url: p.image_url ?? '',
+      in_stock: p.in_stock, featured: p.featured,
+    })
     setEditId(p.id); setErr(''); setModal('edit')
   }
 
@@ -83,10 +104,6 @@ export default function AdminProductsPage() {
     setProducts(prev => prev.filter(p => p.id !== id))
   }
 
-  const BADGE: Record<string,string> = {
-    new: 'badge-new', used: 'badge-used', accessories: 'badge-accessories', services: 'badge-services'
-  }
-
   const filtered = catFilter === 'all' ? products : products.filter(p => p.category === catFilter)
 
   return (
@@ -103,7 +120,7 @@ export default function AdminProductsPage() {
         </button>
       </div>
 
-      {/* Filter */}
+      {/* Filter tabs */}
       <div className="flex gap-2 mb-5 flex-wrap">
         {['all', ...CATS.map(c => c.v)].map(c => (
           <button key={c} onClick={() => setCatFilter(c)}
@@ -128,7 +145,15 @@ export default function AdminProductsPage() {
       ) : (
         <div className="bg-bc-card border border-bc-border rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm table-fixed">
+              <colgroup>
+                <col style={{ width: '42%' }} />
+                <col style={{ width: '13%' }} />
+                <col style={{ width: '12%' }} />
+                <col style={{ width: '11%' }} />
+                <col style={{ width: '11%' }} />
+                <col style={{ width: '11%' }} />
+              </colgroup>
               <thead>
                 <tr className="border-b border-bc-border">
                   {['Product', 'Category', 'Price', 'Stock', 'Featured', 'Actions'].map(h => (
@@ -139,18 +164,24 @@ export default function AdminProductsPage() {
               <tbody className="divide-y divide-bc-border/50">
                 {filtered.map(p => (
                   <tr key={p.id} className="hover:bg-bc-border/20 transition-colors">
-                    <td className="px-4 py-3">
-                      <div className="font-medium text-white text-sm">{p.name}</div>
-                      {p.name_bn && <div className="bengali text-slate-500 text-xs">{p.name_bn}</div>}
-                      {p.specs && <div className="text-slate-500 text-xs mt-0.5 max-w-xs truncate">{p.specs}</div>}
+                    {/* Product column — fixed max width, text wraps/truncates */}
+                    <td className="px-4 py-3 min-w-0">
+                      <div className="font-medium text-white text-sm break-words">{p.name}</div>
+                      {p.name_bn && (
+                        <div className="text-slate-400 text-xs mt-0.5 break-words line-clamp-2">{p.name_bn}</div>
+                      )}
+                      {p.specs && (
+                        <div className="text-slate-500 text-xs mt-0.5 truncate">{p.specs}</div>
+                      )}
                     </td>
-                    <td className="px-4 py-3">
+                    {/* Category column — fixed, never wraps */}
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE[p.category]}`}>
                         {CATS.find(c => c.v === p.category)?.l ?? p.category}
                       </span>
                     </td>
                     <td className="px-4 py-3 font-semibold text-bc-cyan whitespace-nowrap">{p.price ?? '—'}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <button onClick={() => toggleStock(p.id, !p.in_stock)}
                         className={`text-xs font-medium px-2.5 py-1 rounded-full border transition-all ${
                           p.in_stock ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-red-500/15 text-red-400 border-red-500/30'
@@ -158,7 +189,7 @@ export default function AdminProductsPage() {
                         {p.in_stock ? '✓ In Stock' : '✗ Out'}
                       </button>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <button onClick={() => toggleFeatured(p.id, !p.featured)}
                         className={`text-xs px-2.5 py-1 rounded-full border transition-all ${
                           p.featured ? 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30' : 'bg-bc-surface text-slate-500 border-bc-border'
@@ -166,7 +197,7 @@ export default function AdminProductsPage() {
                         {p.featured ? '⭐ Yes' : '—'}
                       </button>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center gap-1.5">
                         <button onClick={() => openEdit(p)}
                           className="p-1.5 rounded-lg bg-bc-blue/10 border border-bc-blue/25 text-bc-blue hover:bg-bc-blue/20 transition-all text-xs">
@@ -196,38 +227,77 @@ export default function AdminProductsPage() {
             </div>
             <div className="p-5 space-y-4">
               <div className="grid grid-cols-2 gap-4">
+
+                {/* Name (English) */}
                 <div className="col-span-2">
                   <label className="block text-xs text-slate-400 mb-1">Name (English) *</label>
-                  <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                    className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-bc-blue/60" placeholder="Product name" />
+                  <input
+                    value={form.name}
+                    onChange={e => setForm({ ...form, name: e.target.value })}
+                    className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-bc-blue/60"
+                    placeholder="Product name"
+                  />
                 </div>
+
+                {/* Description — auto-expanding textarea */}
                 <div className="col-span-2">
-                  <label className="bengali block text-xs text-slate-400 mb-1">নাম (বাংলা)</label>
-                  <input value={form.name_bn ?? ''} onChange={e => setForm({ ...form, name_bn: e.target.value })}
-                    className="bengali w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-bc-blue/60" placeholder="বাংলায় নাম (ঐচ্ছিক)" />
+                  <label className="block text-xs text-slate-400 mb-1">Description</label>
+                  <textarea
+                    ref={descRef}
+                    value={form.name_bn ?? ''}
+                    onChange={e => setForm({ ...form, name_bn: e.target.value })}
+                    onKeyDown={e => { if (e.key === 'Enter' && e.shiftKey) e.stopPropagation() }}
+                    rows={1}
+                    style={{ resize: 'none', overflowY: 'auto', minHeight: '42px', maxHeight: '240px' }}
+                    className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-bc-blue/60 leading-relaxed"
+                    placeholder="Enter product description"
+                  />
+                  <p className="text-slate-600 text-xs mt-1">Shift + Enter for new line</p>
                 </div>
+
+                {/* Category + Price */}
                 <div>
                   <label className="block text-xs text-slate-400 mb-1">Category</label>
-                  <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value as Product['category'] })}
+                  <select
+                    value={form.category}
+                    onChange={e => setForm({ ...form, category: e.target.value as Product['category'] })}
                     className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-bc-blue/60">
                     {CATS.map(c => <option key={c.v} value={c.v}>{c.l}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs text-slate-400 mb-1">Price</label>
-                  <input value={form.price ?? ''} onChange={e => setForm({ ...form, price: e.target.value })}
-                    className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-bc-blue/60" placeholder="৳42,000" />
+                  <input
+                    value={form.price ?? ''}
+                    onChange={e => setForm({ ...form, price: e.target.value })}
+                    className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-bc-blue/60"
+                    placeholder="৳0.00"
+                  />
                 </div>
+
+                {/* Specs */}
                 <div className="col-span-2">
                   <label className="block text-xs text-slate-400 mb-1">Specs</label>
-                  <input value={form.specs ?? ''} onChange={e => setForm({ ...form, specs: e.target.value })}
-                    className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-bc-blue/60" placeholder="Core i5 | 8GB RAM | 512GB SSD" />
+                  <input
+                    value={form.specs ?? ''}
+                    onChange={e => setForm({ ...form, specs: e.target.value })}
+                    className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-bc-blue/60"
+                    placeholder="Enter product specifications"
+                  />
                 </div>
+
+                {/* Image URL */}
                 <div className="col-span-2">
                   <label className="block text-xs text-slate-400 mb-1">Image URL</label>
-                  <input value={form.image_url ?? ''} onChange={e => setForm({ ...form, image_url: e.target.value })}
-                    className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-bc-blue/60" placeholder="https://..." />
+                  <input
+                    value={form.image_url ?? ''}
+                    onChange={e => setForm({ ...form, image_url: e.target.value })}
+                    className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-bc-blue/60"
+                    placeholder="https://..."
+                  />
                 </div>
+
+                {/* Toggles */}
                 <div className="flex items-center gap-3">
                   <label className="relative inline-flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" checked={form.in_stock} onChange={e => setForm({ ...form, in_stock: e.target.checked })} className="sr-only peer" />
