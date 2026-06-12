@@ -46,7 +46,7 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className="p-4 flex flex-col flex-1">
         <h3 className="font-semibold text-white text-base leading-snug mb-1">{product.name}</h3>
         {product.name_bn && (
-          <p className="bengali text-slate-500 text-xs mb-2">{product.name_bn}</p>
+          <p className="text-slate-400 text-xs mb-2 whitespace-pre-wrap leading-relaxed">{product.name_bn}</p>
         )}
         {product.specs && (
           <p className="text-slate-400 text-xs leading-relaxed mb-3 flex-1">{product.specs}</p>
