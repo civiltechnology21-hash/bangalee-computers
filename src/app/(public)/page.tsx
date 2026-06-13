@@ -101,10 +101,11 @@ function Carousel({ products }: CarouselProps) {
       return { flex: '0 0 84%', maxWidth: '84%' }
     }
     if (bp === 'tablet') {
-      return { flex: `0 0 calc(${100 / actualVisible}% - 8px)`, maxWidth: `calc(${100 / actualVisible}% - 8px)` }
+      // Subtract a little extra so next card peeks ~30px on the right
+      return { flex: `0 0 calc(${100 / actualVisible}% - 24px)`, maxWidth: `calc(${100 / actualVisible}% - 24px)` }
     }
-    // desktop
-    return { flex: `0 0 calc(${100 / actualVisible}% - 12px)`, maxWidth: `calc(${100 / actualVisible}% - 12px)` }
+    // desktop: subtract extra so ~40px of next card peeks on the right
+    return { flex: `0 0 calc(${100 / actualVisible}% - 28px)`, maxWidth: `calc(${100 / actualVisible}% - 28px)` }
   }
 
   function getGap() {
