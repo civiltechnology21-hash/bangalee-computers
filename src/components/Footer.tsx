@@ -12,23 +12,23 @@ function useShopStatus() {
     const now = new Date(
       new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })
     )
-    const day  = now.getDay()   // 0=Sun,1=Mon,...,5=Fri,6=Sat
-    const hour = now.getHours()
-    const min  = now.getMinutes()
+    const day        = now.getDay()  // 0=Sun,1=Mon,...,5=Fri,6=Sat
+    const nowMinutes = now.getHours() * 60 + now.getMinutes()
+    const openMinutes  = 10 * 60   // 10:00 AM
+    const closeMinutes = 22 * 60   // 10:00 PM
 
+    // Friday is always closed
     if (day === 5) {
       setStatus('holiday')
       return
     }
-    // Open: any hour < 22:00  (shop opens "morning" — no fixed open time)
-    const closingMinutes = 22 * 60          // 22:00
-    const nowMinutes     = hour * 60 + min
-    setStatus(nowMinutes < closingMinutes ? 'open' : 'closed')
+    // Open only between 10:00 AM and 10:00 PM
+    setStatus(nowMinutes >= openMinutes && nowMinutes < closeMinutes ? 'open' : 'closed')
   }
 
   useEffect(() => {
     check()
-    const id = setInterval(check, 60_000)   // re-check every minute
+    const id = setInterval(check, 60_000)  // re-check every minute
     return () => clearInterval(id)
   }, [])
 
@@ -280,12 +280,12 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Business Hours — Fix 3: realtime status */}
+            {/* Business Hours */}
             <div>
               <h3 className="text-white font-semibold mb-4 text-sm tracking-widest uppercase">Business Hours</h3>
               <ul className="space-y-2 text-sm">
-                <li className="bengali text-slate-300">{BUSINESS.hours.weekdays}</li>
-                <li className="bengali text-red-400 font-medium">🚫 {BUSINESS.hours.friday}</li>
+                <li className="bengali text-slate-300">শনি – বৃহস্পতি: সকাল ১০:০০ – রাত ১০:০০</li>
+                <li className="bengali text-red-400 font-medium">🚫 শুক্রবার: বন্ধ</li>
               </ul>
               <div className="mt-4 pt-4 border-t border-bc-border">
                 <div className="flex items-center gap-2 text-sm">
