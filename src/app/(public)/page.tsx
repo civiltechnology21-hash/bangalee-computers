@@ -9,6 +9,34 @@ import ProductCard from '@/components/ProductCard'
 import PolicyNotice from '@/components/PolicyNotice'
 import { BUSINESS, SERVICES } from '@/lib/constants'
 
+// ─── Live settings from Supabase ─────────────────────────
+function useSettings() {
+  const [settings, setSettings] = useState({
+    fb_followers:   BUSINESS.fbFollowers,
+    fb_rating:      BUSINESS.fbRating,
+  })
+
+  useEffect(() => {
+    async function fetch() {
+      const { data } = await supabase.from('settings').select('key, value')
+      if (!data) return
+      const map = Object.fromEntries(data.map((r: { key: string; value: string }) => [r.key, r.value]))
+      setSettings(prev => ({
+        fb_followers: map.fb_followers ?? prev.fb_followers,
+        fb_rating:    map.fb_rating    ?? prev.fb_rating,
+      }))
+    }
+    fetch()
+    const channel = supabase
+      .channel('settings-home')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, fetch)
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [])
+
+  return settings
+}
+
 // ─── Category sort order & config ────────────────────────
 const CAT_ORDER: Record<string, number> = { new: 0, used: 1, accessories: 2, services: 3 }
 
@@ -374,6 +402,8 @@ function FeaturedProducts() {
 
 // ─── Page ────────────────────────────────────────────────
 export default function HomePage() {
+  const liveStats = useSettings()
+
   return (
     <>
       {/* ─── HERO ───────────────────────────────────────── */}
@@ -441,8 +471,8 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 -mt-8 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {[
-            { value: BUSINESS.fbFollowers,                label: 'Facebook Followers', icon: '👥' },
-            { value: BUSINESS.fbRating,                   label: 'Facebook Rating',    icon: '⭐' },
+            { value: liveStats.fb_followers,              label: 'Facebook Followers', icon: '👥' },
+            { value: liveStats.fb_rating,                 label: 'Facebook Rating',    icon: '⭐' },
             { value: 'Japan/SG',                          label: 'Imported Laptops',   icon: '✈️' },
             { value: BUSINESS.yearsInBusiness + ' Years', label: 'In Business',        icon: '🏆' },
           ].map((s, i) => (
