@@ -1,7 +1,54 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { BUSINESS } from '@/lib/constants'
+import { supabase } from '@/lib/supabase'
+
+// ─── Live settings from Supabase ─────────────────────────
+type Settings = {
+  fb_followers: string
+  fb_rating: string
+  google_rating: string
+  yt_subscribers: string
+}
+
+function useSettings() {
+  const [settings, setSettings] = useState<Settings>({
+    fb_followers: BUSINESS.fbFollowers,
+    fb_rating:    BUSINESS.fbRating,
+    google_rating: BUSINESS.googleRating,
+    yt_subscribers: '৬৭০+',
+  })
+
+  useEffect(() => {
+    async function fetch() {
+      const { data } = await supabase.from('settings').select('key, value')
+      if (!data) return
+      const map = Object.fromEntries(data.map(r => [r.key, r.value]))
+      setSettings(prev => ({
+        fb_followers:   map.fb_followers   ?? prev.fb_followers,
+        fb_rating:      map.fb_rating      ?? prev.fb_rating,
+        google_rating:  map.google_rating  ?? prev.google_rating,
+        yt_subscribers: map.yt_subscribers ?? prev.yt_subscribers,
+      }))
+    }
+    fetch()
+
+    const channel = supabase
+      .channel('settings-about')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, fetch)
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [])
+
+  return settings
+}
 
 export default function AboutPage() {
+  const s = useSettings()
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
       {/* Header */}
@@ -47,20 +94,14 @@ export default function AboutPage() {
                   </div>
                   <span className="text-slate-300 text-sm">Facebook Rating</span>
                 </div>
-                <div className="text-right">
-                  <span className="text-yellow-400 font-bold">{BUSINESS.fbRating}</span>
-                  <span className="text-slate-500 text-xs ml-1">(30 votes)</span>
-                </div>
+                <span className="text-yellow-400 font-bold">{s.fb_rating}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-red-500/15 flex items-center justify-center text-sm">G</div>
+                  <div className="w-8 h-8 rounded-lg bg-red-500/15 flex items-center justify-center text-sm font-bold text-red-400">G</div>
                   <span className="text-slate-300 text-sm">Google Rating</span>
                 </div>
-                <div className="text-right">
-                  <span className="text-yellow-400 font-bold">{BUSINESS.googleRating}</span>
-                  <span className="text-slate-500 text-xs ml-1">(15 reviews)</span>
-                </div>
+                <span className="text-yellow-400 font-bold">{s.google_rating}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -71,7 +112,7 @@ export default function AboutPage() {
                   </div>
                   <span className="text-slate-300 text-sm">Facebook Followers</span>
                 </div>
-                <span className="text-bc-cyan font-bold">{BUSINESS.fbFollowers}</span>
+                <span className="text-bc-cyan font-bold">{s.fb_followers}</span>
               </div>
             </div>
           </div>
@@ -89,7 +130,7 @@ export default function AboutPage() {
                 </div>
                 <div className="flex-1">
                   <div className="text-white text-sm font-medium">Facebook</div>
-                  <div className="text-slate-500 text-xs">bangalee.computers · {BUSINESS.fbFollowers} followers</div>
+                  <div className="text-slate-500 text-xs">bangalee.computers · {s.fb_followers} followers</div>
                 </div>
                 <svg className="w-4 h-4 text-slate-600 group-hover:text-bc-blue transition-colors" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -104,7 +145,7 @@ export default function AboutPage() {
                 </div>
                 <div className="flex-1">
                   <div className="text-white text-sm font-medium">YouTube</div>
-                  <div className="text-slate-500 text-xs">670+ subscribers</div>
+                  <div className="text-slate-500 text-xs">{s.yt_subscribers} subscribers</div>
                 </div>
                 <svg className="w-4 h-4 text-slate-600 group-hover:text-bc-blue transition-colors" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -154,7 +195,7 @@ export default function AboutPage() {
                 { icon: '💰', text: 'সাশ্রয়ী মূল্যে সর্বোচ্চ মানের পণ্য' },
                 { icon: '🔧', text: 'বিক্রয়োত্তর মেরামত ও সার্ভিস সুবিধা' },
                 { icon: '📞', text: '৫+ বছরের বিশ্বস্ত সেবার অভিজ্ঞতা' },
-                { icon: '👥', text: '৩৪,০০০+ সন্তুষ্ট গ্রাহক Facebook-এ' },
+                { icon: '👥', text: `${s.fb_followers} সন্তুষ্ট গ্রাহক Facebook-এ` },
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <span className="text-lg shrink-0">{item.icon}</span>
