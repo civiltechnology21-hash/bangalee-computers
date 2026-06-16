@@ -182,8 +182,8 @@ export default function Footer() {
             {/* Brand */}
             <div className="space-y-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-bc-blue to-bc-cyan flex items-center justify-center text-white font-black">
-                  BC
+                <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center">
+                  <img src="/logo.png" alt="Bangalee Computers Logo" className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <div className="font-bold text-white">Bangalee Computers</div>
