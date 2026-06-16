@@ -122,7 +122,7 @@ export default function AdminMessagesPage() {
                     )}
                   </div>
                   {inq.message && (
-                    <p className="bengali text-slate-400 text-xs mt-2 leading-relaxed bg-bc-surface/60 rounded-lg p-2 border border-bc-border/50">
+                    <p className="bengali text-slate-400 text-xs mt-2 leading-relaxed bg-bc-surface/60 rounded-lg p-2 border border-bc-border/50 whitespace-pre-wrap">
                       {inq.message}
                     </p>
                   )}
