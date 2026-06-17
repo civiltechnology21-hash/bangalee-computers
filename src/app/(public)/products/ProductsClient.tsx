@@ -11,6 +11,7 @@ const TABS = [
   { key: 'new',         label: 'নতুন ল্যাপটপ',  en: 'New Laptop' },
   { key: 'used',        label: 'পুরনো ল্যাপটপ', en: 'Used Laptop' },
   { key: 'accessories', label: 'আনুষাঙ্গিক',    en: 'Accessories' },
+  { key: 'services',    label: 'সার্ভিস',        en: 'Services' },
 ]
 
 export default function ProductsClient() {
