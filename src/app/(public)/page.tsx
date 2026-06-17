@@ -160,18 +160,32 @@ function Carousel({ products }: CarouselProps) {
   }
 
   // ── Pointer events (drag + swipe) ──
+  const pointerCaptured = useRef(false)
+
   function onPointerDown(e: React.PointerEvent) {
     if (animating.current) return
+    // Don't start drag tracking on interactive elements (links/buttons inside the card)
+    const target = e.target as HTMLElement
+    if (target.closest('a, button')) return
+
     isDragging.current = true
+    pointerCaptured.current = false
     dragStartX.current = e.clientX
     dragCurrentX.current = 0
     dragStartIndex.current = index
-    ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
   }
 
   function onPointerMove(e: React.PointerEvent) {
     if (!isDragging.current) return
     const delta = e.clientX - dragStartX.current
+
+    // Only capture the pointer once the drag has actually moved past a small
+    // threshold — this prevents intercepting simple taps/clicks on buttons.
+    if (!pointerCaptured.current && Math.abs(delta) > 5) {
+      pointerCaptured.current = true
+      ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+    }
+
     dragCurrentX.current = delta
     if (trackRef.current) {
       trackRef.current.style.transition = 'none'
@@ -179,9 +193,13 @@ function Carousel({ products }: CarouselProps) {
     }
   }
 
-  function onPointerUp() {
+  function onPointerUp(e: React.PointerEvent) {
     if (!isDragging.current) return
     isDragging.current = false
+    if (pointerCaptured.current) {
+      try { (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId) } catch {}
+    }
+    pointerCaptured.current = false
     const delta = dragCurrentX.current
     const threshold = 60
     if (delta < -threshold) goNext()
