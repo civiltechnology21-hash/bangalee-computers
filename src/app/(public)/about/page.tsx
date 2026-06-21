@@ -11,14 +11,16 @@ type Settings = {
   fb_rating: string
   google_rating: string
   yt_subscribers: string
+  years_in_business: string
 }
 
 function useSettings() {
   const [settings, setSettings] = useState<Settings>({
-    fb_followers: BUSINESS.fbFollowers,
-    fb_rating:    BUSINESS.fbRating,
-    google_rating: BUSINESS.googleRating,
-    yt_subscribers: '৬৭০+',
+    fb_followers:      BUSINESS.fbFollowers,
+    fb_rating:         BUSINESS.fbRating,
+    google_rating:     BUSINESS.googleRating,
+    yt_subscribers:    '৬৭০+',
+    years_in_business: BUSINESS.yearsInBusiness,
   })
 
   useEffect(() => {
@@ -27,10 +29,11 @@ function useSettings() {
       if (!data) return
       const map = Object.fromEntries(data.map(r => [r.key, r.value]))
       setSettings(prev => ({
-        fb_followers:   map.fb_followers   ?? prev.fb_followers,
-        fb_rating:      map.fb_rating      ?? prev.fb_rating,
-        google_rating:  map.google_rating  ?? prev.google_rating,
-        yt_subscribers: map.yt_subscribers ?? prev.yt_subscribers,
+        fb_followers:      map.fb_followers      ?? prev.fb_followers,
+        fb_rating:         map.fb_rating         ?? prev.fb_rating,
+        google_rating:     map.google_rating     ?? prev.google_rating,
+        yt_subscribers:    map.yt_subscribers    ?? prev.yt_subscribers,
+        years_in_business: map.years_in_business ?? prev.years_in_business,
       }))
     }
     fetch()
@@ -72,7 +75,7 @@ export default function AboutPage() {
               <span className="text-bc-blue">📖</span> আমাদের গল্প
             </h2>
             <p className="bengali text-slate-400 text-sm leading-7">
-              বাঙালী কম্পিউটার্স খুলনার একটি বিশ্বস্ত প্রযুক্তি প্রতিষ্ঠান। আমরা গত {BUSINESS.yearsInBusiness} বছরেরও বেশি সময় ধরে খুলনাবাসীকে মানসম্পন্ন ল্যাপটপ এবং কম্পিউটার সেবা প্রদান করে আসছি।
+              বাঙালী কম্পিউটার্স খুলনার একটি বিশ্বস্ত প্রযুক্তি প্রতিষ্ঠান। আমরা গত {s.years_in_business} বছরেরও বেশি সময় ধরে খুলনাবাসীকে মানসম্পন্ন ল্যাপটপ এবং কম্পিউটার সেবা প্রদান করে আসছি।
             </p>
             <p className="bengali text-slate-400 text-sm leading-7 mt-3">
               আমাদের বিশেষত্ব হলো জাপান ও সিঙ্গাপুর থেকে আমদানিকৃত উচ্চমানের রিফার্বিশড ল্যাপটপ। এই ল্যাপটপগুলো কম দামে প্রিমিয়াম পারফরম্যান্স দেয় এবং আমাদের দক্ষ টেকনিশিয়ান দ্বারা পরীক্ষিত।
@@ -194,7 +197,7 @@ export default function AboutPage() {
                 { icon: '✅', text: 'প্রতিটি পণ্য ব্যবহারের আগে পরীক্ষিত ও যাচাইকৃত' },
                 { icon: '💰', text: 'সাশ্রয়ী মূল্যে সর্বোচ্চ মানের পণ্য' },
                 { icon: '🔧', text: 'বিক্রয়োত্তর মেরামত ও সার্ভিস সুবিধা' },
-                { icon: '📞', text: '৫+ বছরের বিশ্বস্ত সেবার অভিজ্ঞতা' },
+                { icon: '📞', text: `${s.years_in_business}+ বছরের বিশ্বস্ত সেবার অভিজ্ঞতা` },
                 { icon: '👥', text: `${s.fb_followers} সন্তুষ্ট গ্রাহক Facebook-এ` },
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
