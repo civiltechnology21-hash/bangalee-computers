@@ -12,8 +12,9 @@ import { BUSINESS, SERVICES } from '@/lib/constants'
 // ─── Live settings from Supabase ─────────────────────────
 function useSettings() {
   const [settings, setSettings] = useState({
-    fb_followers:   BUSINESS.fbFollowers,
-    fb_rating:      BUSINESS.fbRating,
+    fb_followers:      BUSINESS.fbFollowers,
+    fb_rating:         BUSINESS.fbRating,
+    years_in_business: BUSINESS.yearsInBusiness,
   })
 
   useEffect(() => {
@@ -22,8 +23,9 @@ function useSettings() {
       if (!data) return
       const map = Object.fromEntries(data.map((r: { key: string; value: string }) => [r.key, r.value]))
       setSettings(prev => ({
-        fb_followers: map.fb_followers ?? prev.fb_followers,
-        fb_rating:    map.fb_rating    ?? prev.fb_rating,
+        fb_followers:      map.fb_followers      ?? prev.fb_followers,
+        fb_rating:         map.fb_rating         ?? prev.fb_rating,
+        years_in_business: map.years_in_business ?? prev.years_in_business,
       }))
     }
     fetch()
@@ -492,7 +494,7 @@ export default function HomePage() {
             { value: liveStats.fb_followers,              label: 'Facebook Followers', icon: '👥' },
             { value: liveStats.fb_rating,                 label: 'Facebook Rating',    icon: '⭐' },
             { value: 'Japan/SG',                          label: 'Imported Laptops',   icon: '✈️' },
-            { value: BUSINESS.yearsInBusiness + ' Years', label: 'In Business',        icon: '🏆' },
+            { value: liveStats.years_in_business + '+ Years', label: 'In Business',        icon: '🏆' },
           ].map((s, i) => (
             <div key={i} className="bg-bc-card border border-bc-border rounded-2xl p-4 text-center blue-glow">
               <div className="text-2xl mb-1">{s.icon}</div>
