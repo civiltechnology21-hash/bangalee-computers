@@ -73,6 +73,11 @@ create policy "Authenticated delete inquiries"
 -- Seed Sample Products
 -- =============================================
 
+-- To update these values, edit the rows directly in Supabase Table Editor.
+-- Add years_in_business row to the settings table:
+--   INSERT INTO settings (key, value) VALUES ('years_in_business', '৫');
+-- (Run this once in Supabase SQL Editor if the settings table already exists)
+
 insert into products (name, name_bn, category, specs, price, in_stock, featured) values
   ('Lenovo IdeaPad 3',    'লেনোভো আইডিয়াপ্যাড ৩',  'new',         'Core i5 12th Gen | 8GB RAM | 512GB SSD | 15.6" FHD',   '৳42,000',  true, true),
   ('Asus VivoBook 15',    'আসুস ভিভোবুক ১৫',         'new',         'Core i3 12th Gen | 8GB RAM | 256GB SSD | 15.6" FHD',   '৳38,500',  true, true),
