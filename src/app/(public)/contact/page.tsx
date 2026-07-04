@@ -14,28 +14,87 @@ const CATEGORIES = [
   'অন্যান্য',
 ]
 
-export default function ContactPage() {
-  const [form, setForm] = useState({ name: '', phone: '', category: '', message: '' })
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
-  const [err, setErr] = useState('')
+// BD valid prefixes
+const VALID_PREFIXES = ['017', '013', '019', '014', '018', '016', '015']
 
+// Bengali digit map
+const BN_TO_EN: Record<string, string> = {
+  '০':'0','১':'1','২':'2','৩':'3','৪':'4',
+  '৫':'5','৬':'6','৭':'7','৮':'8','৯':'9',
+}
+
+function toEnDigits(str: string) {
+  return str.split('').map(c => BN_TO_EN[c] ?? c).join('')
+}
+
+function formatPhone(raw: string) {
+  // raw = digits only, max 11
+  if (raw.length <= 5) return raw
+  return raw.slice(0, 5) + '-' + raw.slice(5)
+}
+
+export default function ContactPage() {
+  const [form, setForm]     = useState({ name: '', phone: '', category: '', message: '' })
+  const [rawPhone, setRawPhone] = useState('')          // digits only, no hyphen
+  const [status, setStatus] = useState<'idle'|'loading'|'success'|'error'>('idle')
+  const [err, setErr]       = useState('')
+
+  // ── Name validation ─────────────────────────────────────────
+  const nameLen    = form.name.length
+  const nameTooShort = nameLen > 0 && nameLen < 3
+  const nameTooLong  = nameLen > 50
+
+  // ── Phone validation ────────────────────────────────────────
+  const phoneDigits  = rawPhone.length          // 0-11
+  const prefix3      = rawPhone.slice(0, 3)
+  const prefixInvalid =
+    rawPhone.length >= 3 && !VALID_PREFIXES.includes(prefix3)
+  const phoneTooShort = rawPhone.length > 0 && rawPhone.length < 11
+  const phoneReady    = rawPhone.length === 11 && !prefixInvalid
+
+  // ── Message validation ──────────────────────────────────────
+  const msgLen     = form.message.length
+  const msgTooLong = msgLen > 1000
+
+  // ── Phone input handler ─────────────────────────────────────
+  function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const raw = e.target.value
+    // Strip hyphen, map bengali digits, keep only numeric chars, max 11
+    const digits = toEnDigits(raw.replace(/-/g, '')).replace(/\D/g, '').slice(0, 11)
+    setRawPhone(digits)
+    setForm(prev => ({ ...prev, phone: digits }))
+  }
+
+  // ── Submit ──────────────────────────────────────────────────
   const handleSubmit = async () => {
-    if (!form.name.trim() || !form.phone.trim()) {
-      setErr('নাম ও ফোন নম্বর আবশ্যক।')
-      return
+    if (!form.name.trim() || nameLen < 3) {
+      setErr('নামে কমপক্ষে ৩টি অক্ষর দিতে হবে।'); return
     }
-    setStatus('loading')
-    setErr('')
+    if (nameTooLong) {
+      setErr('নাম ৫০ অক্ষরের বেশি হতে পারবে না।'); return
+    }
+    if (rawPhone.length !== 11) {
+      setErr('সঠিক ১১ ডিজিটের ফোন নম্বর দিতে হবে।'); return
+    }
+    if (prefixInvalid) {
+      setErr('বৈধ বাংলাদেশি নম্বর দিন।'); return
+    }
+    if (msgTooLong) {
+      setErr('বার্তা ১০০০ অক্ষরের বেশি হতে পারবে না।'); return
+    }
+
+    setStatus('loading'); setErr('')
     try {
       const { error } = await supabase.from('inquiries').insert({
-        name: form.name.trim(),
-        phone: form.phone.trim(),
+        name:     form.name.trim(),
+        phone:    formatPhone(rawPhone),
         category: form.category || null,
-        message: form.message.trim() || null,
+        message:  form.message.trim() || null,
       })
       if (error) throw error
       setStatus('success')
       setForm({ name: '', phone: '', category: '', message: '' })
+      setRawPhone('')
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : 'Unknown error'
       setErr('সমস্যা হয়েছে। সরাসরি ফোন করুন: ' + BUSINESS.phone1)
@@ -73,7 +132,7 @@ export default function ContactPage() {
             <div className="bg-bc-card border border-bc-border rounded-2xl p-6 space-y-5">
               <h2 className="font-semibold text-white text-lg">📝 ইনকোয়ারি ফর্ম</h2>
 
-              {/* Name */}
+              {/* ── Name ── */}
               <div>
                 <label className="bengali block text-sm text-slate-400 mb-1.5">
                   নাম <span className="text-red-400">*</span>
@@ -82,26 +141,64 @@ export default function ContactPage() {
                   type="text"
                   placeholder="আপনার নাম লিখুন"
                   value={form.name}
+                  maxLength={50}
                   onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="bengali w-full bg-bc-surface border border-bc-border rounded-xl px-4 py-3 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-bc-blue/60 transition-colors"
+                  className={`bengali w-full bg-bc-surface border rounded-xl px-4 py-3 text-white placeholder-slate-600 text-sm focus:outline-none transition-colors ${
+                    nameTooShort || nameTooLong
+                      ? 'border-red-500/60 focus:border-red-500'
+                      : 'border-bc-border focus:border-bc-blue/60'
+                  }`}
                 />
+                {nameTooShort && (
+                  <p className="bengali text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                    ⚠️ নামে কমপক্ষে ৩টি অক্ষর থাকতে হবে।
+                  </p>
+                )}
+                {nameTooLong && (
+                  <p className="bengali text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                    ⚠️ নাম সর্বোচ্চ ৫০ অক্ষরের মধ্যে হতে হবে।
+                  </p>
+                )}
+                {!nameTooShort && !nameTooLong && nameLen > 0 && (
+                  <p className="text-slate-600 text-xs mt-1 text-right">{nameLen}/50</p>
+                )}
               </div>
 
-              {/* Phone */}
+              {/* ── Phone ── */}
               <div>
                 <label className="bengali block text-sm text-slate-400 mb-1.5">
                   ফোন নম্বর <span className="text-red-400">*</span>
                 </label>
                 <input
-                  type="tel"
+                  type="text"
+                  inputMode="numeric"
                   placeholder="01XXXXXXXXX"
-                  value={form.phone}
-                  onChange={e => setForm({ ...form, phone: e.target.value })}
-                  className="w-full bg-bc-surface border border-bc-border rounded-xl px-4 py-3 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-bc-blue/60 transition-colors"
+                  value={rawPhone.length > 5 ? rawPhone.slice(0,5) + '-' + rawPhone.slice(5) : rawPhone}
+                  onChange={handlePhoneChange}
+                  className={`w-full bg-bc-surface border rounded-xl px-4 py-3 text-white placeholder-slate-600 text-sm focus:outline-none transition-colors ${
+                    prefixInvalid || (phoneTooShort && phoneDigits === 11 === false && phoneDigits > 0 && phoneDigits < 11 && phoneDigits >= 3)
+                      ? 'border-red-500/60 focus:border-red-500'
+                      : phoneReady
+                        ? 'border-green-500/50 focus:border-green-500/70'
+                        : 'border-bc-border focus:border-bc-blue/60'
+                  }`}
                 />
+                {prefixInvalid && (
+                  <p className="bengali text-red-400 text-xs mt-1.5">
+                    ⚠️ অবৈধ নম্বর — বাংলাদেশের বৈধ নম্বর দিন (017/013/019/014/018/016/015)।
+                  </p>
+                )}
+                {!prefixInvalid && phoneDigits > 0 && phoneDigits < 11 && (
+                  <p className="bengali text-slate-500 text-xs mt-1.5">
+                    {phoneDigits}/11 ডিজিট
+                  </p>
+                )}
+                {!prefixInvalid && phoneDigits === 11 && (
+                  <p className="bengali text-green-400 text-xs mt-1.5">✓ সঠিক নম্বর</p>
+                )}
               </div>
 
-              {/* Category */}
+              {/* ── Category ── */}
               <div>
                 <label className="bengali block text-sm text-slate-400 mb-1.5">কারণ</label>
                 <select
@@ -116,7 +213,7 @@ export default function ContactPage() {
                 </select>
               </div>
 
-              {/* Message */}
+              {/* ── Message ── */}
               <div>
                 <label className="bengali block text-sm text-slate-400 mb-1.5">বার্তা</label>
                 <textarea
@@ -124,8 +221,24 @@ export default function ContactPage() {
                   rows={4}
                   value={form.message}
                   onChange={e => setForm({ ...form, message: e.target.value })}
-                  className="bengali w-full bg-bc-surface border border-bc-border rounded-xl px-4 py-3 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-bc-blue/60 transition-colors resize-none"
+                  className={`bengali w-full bg-bc-surface border rounded-xl px-4 py-3 text-white placeholder-slate-600 text-sm focus:outline-none transition-colors resize-none ${
+                    msgTooLong
+                      ? 'border-red-500/60 focus:border-red-500'
+                      : 'border-bc-border focus:border-bc-blue/60'
+                  }`}
                 />
+                <div className="flex items-center justify-between mt-1">
+                  {msgTooLong ? (
+                    <p className="bengali text-red-400 text-xs">
+                      ⚠️ বার্তা সর্বোচ্চ ১০০০ অক্ষরের মধ্যে হতে হবে।
+                    </p>
+                  ) : (
+                    <span />
+                  )}
+                  <p className={`text-xs ml-auto ${msgLen > 950 ? (msgTooLong ? 'text-red-400' : 'text-yellow-400') : 'text-slate-600'}`}>
+                    {msgLen}/1000
+                  </p>
+                </div>
               </div>
 
               {err && (
@@ -136,7 +249,7 @@ export default function ContactPage() {
 
               <button
                 onClick={handleSubmit}
-                disabled={status === 'loading'}
+                disabled={status === 'loading' || nameTooShort || nameTooLong || prefixInvalid || msgTooLong}
                 className="w-full bg-gradient-to-r from-bc-blue to-bc-cyan text-white font-semibold py-3.5 rounded-xl transition-all hover:opacity-90 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
                 {status === 'loading' ? '⏳ পাঠানো হচ্ছে...' : '✉️ বার্তা পাঠান'}
@@ -151,7 +264,6 @@ export default function ContactPage() {
 
         {/* ── INFO PANEL ───────────────────────── */}
         <div className="lg:col-span-2 space-y-5">
-          {/* Contact info */}
           <div className="bg-bc-card border border-bc-border rounded-2xl p-5 space-y-4">
             <h2 className="font-semibold text-white">📍 যোগাযোগের তথ্য</h2>
 
@@ -172,8 +284,7 @@ export default function ContactPage() {
               { phone: BUSINESS.phone1, label: 'প্রাথমিক' },
               { phone: BUSINESS.phone2, label: 'বিকল্প' },
             ].map(p => (
-              <a key={p.phone} href={`tel:${p.phone}`}
-                className="flex items-center gap-3 group">
+              <a key={p.phone} href={`tel:${p.phone}`} className="flex items-center gap-3 group">
                 <div className="w-9 h-9 rounded-xl bg-bc-blue/10 border border-bc-blue/20 flex items-center justify-center shrink-0 group-hover:bg-bc-blue/20 transition-colors">
                   <svg className="w-4 h-4 text-bc-blue" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
@@ -193,7 +304,6 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* WhatsApp quick link */}
           <a href={BUSINESS.whatsapp} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-3 bg-bc-wa/10 hover:bg-bc-wa/20 border border-bc-wa/30 rounded-2xl p-5 transition-all group">
             <div className="w-11 h-11 rounded-xl bg-bc-wa flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -210,7 +320,6 @@ export default function ContactPage() {
             </svg>
           </a>
 
-          {/* Map */}
           <div className="bg-bc-card border border-bc-border rounded-2xl overflow-hidden">
             <div className="h-48 bg-bc-surface">
               <iframe
