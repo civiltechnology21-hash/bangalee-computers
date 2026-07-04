@@ -12,9 +12,8 @@ import { BUSINESS, SERVICES } from '@/lib/constants'
 // ─── Live settings from Supabase ─────────────────────────
 function useSettings() {
   const [settings, setSettings] = useState({
-    fb_followers:      BUSINESS.fbFollowers,
-    fb_rating:         BUSINESS.fbRating,
-    years_in_business: BUSINESS.yearsInBusiness,
+    fb_followers:   BUSINESS.fbFollowers,
+    fb_rating:      BUSINESS.fbRating,
   })
 
   useEffect(() => {
@@ -23,9 +22,8 @@ function useSettings() {
       if (!data) return
       const map = Object.fromEntries(data.map((r: { key: string; value: string }) => [r.key, r.value]))
       setSettings(prev => ({
-        fb_followers:      map.fb_followers      ?? prev.fb_followers,
-        fb_rating:         map.fb_rating         ?? prev.fb_rating,
-        years_in_business: map.years_in_business ?? prev.years_in_business,
+        fb_followers: map.fb_followers ?? prev.fb_followers,
+        fb_rating:    map.fb_rating    ?? prev.fb_rating,
       }))
     }
     fetch()
@@ -183,9 +181,14 @@ function Carousel({ products }: CarouselProps) {
 
     // Only capture the pointer once the drag has actually moved past a small
     // threshold — this prevents intercepting simple taps/clicks on buttons.
-    if (!pointerCaptured.current && Math.abs(delta) > 5) {
+    const threshold = bp === 'mobile' ? 8 : 5
+    if (!pointerCaptured.current && Math.abs(delta) > threshold) {
       pointerCaptured.current = true
       ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+    }
+    // On mobile, prevent vertical scroll only when swiping horizontally
+    if (pointerCaptured.current) {
+      e.preventDefault()
     }
 
     dragCurrentX.current = delta
@@ -233,11 +236,11 @@ function Carousel({ products }: CarouselProps) {
         <button
           onClick={goPrev}
           aria-label="Previous"
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 -translate-x-3
+          className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 -translate-x-3
             w-10 h-10 rounded-full bg-bc-card border border-bc-border
             flex items-center justify-center text-white
             hover:bg-bc-blue hover:border-bc-blue transition-all shadow-xl
-            opacity-0 group-hover/carousel:opacity-100 focus:opacity-100"
+            focus:opacity-100 ${bp === 'mobile' ? 'opacity-100' : 'opacity-0 group-hover/carousel:opacity-100'}`}
           style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -251,11 +254,11 @@ function Carousel({ products }: CarouselProps) {
         <button
           onClick={goNext}
           aria-label="Next"
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 translate-x-3
+          className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 translate-x-3
             w-10 h-10 rounded-full bg-bc-card border border-bc-border
             flex items-center justify-center text-white
             hover:bg-bc-blue hover:border-bc-blue transition-all shadow-xl
-            opacity-0 group-hover/carousel:opacity-100 focus:opacity-100"
+            focus:opacity-100 ${bp === 'mobile' ? 'opacity-100' : 'opacity-0 group-hover/carousel:opacity-100'}`}
           style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -285,6 +288,7 @@ function Carousel({ products }: CarouselProps) {
             gap: `${gap}px`,
             cursor: isDragging.current ? 'grabbing' : 'grab',
             userSelect: 'none',
+            touchAction: 'pan-y',
             transform: bp === 'mobile'
               ? `translateX(${(containerRef.current?.offsetWidth ?? 0) * 0.08}px)`
               : 'translateX(0px)',
@@ -494,7 +498,7 @@ export default function HomePage() {
             { value: liveStats.fb_followers,              label: 'Facebook Followers', icon: '👥' },
             { value: liveStats.fb_rating,                 label: 'Facebook Rating',    icon: '⭐' },
             { value: 'Japan/SG',                          label: 'Imported Laptops',   icon: '✈️' },
-            { value: liveStats.years_in_business + '+ Years', label: 'In Business',        icon: '🏆' },
+            { value: BUSINESS.yearsInBusiness + ' Years', label: 'In Business',        icon: '🏆' },
           ].map((s, i) => (
             <div key={i} className="bg-bc-card border border-bc-border rounded-2xl p-4 text-center blue-glow">
               <div className="text-2xl mb-1">{s.icon}</div>
