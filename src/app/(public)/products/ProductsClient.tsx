@@ -14,47 +14,28 @@ const TABS = [
   { key: 'services',    label: 'সার্ভিস',        en: 'Services' },
 ]
 
-export default function ProductsClient() {
-  const searchParams = useSearchParams()
-  const initCat = searchParams.get('cat') ?? 'all'
 
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading]   = useState(true)
-  const [search,  setSearch]    = useState('')
-  const [tab,     setTab]       = useState(initCat)
-
-  useEffect(() => {
-    async function load() {
-      setLoading(true)
-      try {
-        const { data } = await supabase
-          .from('products')
-          .select('*')
-          .order('created_at', { ascending: false })
-        setProducts((data as Product[]) ?? [])
-      } catch {
-        setProducts([])
-      } finally {
-        setLoading(false)
-      }
-    }
-    load()
-  }, [])
 
   useEffect(() => {
     const c = searchParams.get('cat')
     if (c) setTab(c)
   }, [searchParams])
 
-  const filtered = products.filter(p => {
-    const matchCat = tab === 'all' || p.category === tab
-    const q = search.toLowerCase()
-    const matchSearch = !q ||
-      p.name.toLowerCase().includes(q) ||
-      (p.specs ?? '').toLowerCase().includes(q) ||
-      (p.name_bn ?? '').includes(q)
-    return matchCat && matchSearch
-  })
+  const filtered = products
+    .filter(p => {
+      const matchCat = tab === 'all' || p.category === tab
+      const q = search.toLowerCase()
+      const matchSearch = !q ||
+        p.name.toLowerCase().includes(q) ||
+        (p.specs ?? '').toLowerCase().includes(q) ||
+        (p.name_bn ?? '').includes(q)
+      return matchCat && matchSearch
+    })
+    .sort((a, b) => {
+      const pa = priorityMap[a.id] ?? Infinity
+      const pb = priorityMap[b.id] ?? Infinity
+      return pa - pb
+    })
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
