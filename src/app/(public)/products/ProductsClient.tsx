@@ -14,8 +14,46 @@ const TABS = [
   { key: 'services',    label: 'সার্ভিস',        en: 'Services' },
 ]
 
+export default function ProductsClient() {
+  const searchParams = useSearchParams()
+  const initCat = searchParams.get('cat') ?? 'all'
 
+  const [products, setProducts]       = useState<Product[]>([])
+  const [priorityMap, setPriorityMap] = useState<Record<string, number>>({})
+  const [loading, setLoading]         = useState(true)
+  const [search,  setSearch]          = useState('')
+  const [tab,     setTab]             = useState(initCat)
 
+  // Load products AND priority for current tab together — no race condition
+  useEffect(() => {
+    async function load() {
+      setLoading(true)
+      try {
+        const [prodRes, prioRes] = await Promise.all([
+          supabase.from('products').select('*').order('created_at', { ascending: false }),
+          supabase.from('product_priority').select('product_id, priority').eq('category', tab),
+        ])
+
+        const map: Record<string, number> = {}
+        if (prioRes.data) {
+          prioRes.data.forEach((r: { product_id: string; priority: number }) => {
+            map[r.product_id] = r.priority
+          })
+        }
+
+        setProducts((prodRes.data as Product[]) ?? [])
+        setPriorityMap(map)
+      } catch {
+        setProducts([])
+        setPriorityMap({})
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [tab])
+
+  // Sync tab from URL
   useEffect(() => {
     const c = searchParams.get('cat')
     if (c) setTab(c)
