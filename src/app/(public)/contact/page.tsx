@@ -68,7 +68,7 @@ export default function ContactPage() {
   // ── Submit ──────────────────────────────────────────────────
   const handleSubmit = async () => {
     if (!form.name.trim() || nameLen < 3) {
-      setErr('নামে কমপক্ষে ৩টি অক্ষর দিতে হবে।'); return
+      setErr('Name must be minimum 3 characters required.'); return
     }
     if (nameTooLong) {
       setErr('নাম ৫০ অক্ষরের বেশি হতে পারবে না।'); return
@@ -151,7 +151,7 @@ export default function ContactPage() {
                 />
                 {nameTooShort && (
                   <p className="bengali text-red-400 text-xs mt-1.5 flex items-center gap-1">
-                    ⚠️ নামে কমপক্ষে ৩টি অক্ষর থাকতে হবে।
+                    ⚠️ Name must be minimum 3 characters required.
                   </p>
                 )}
                 {nameTooLong && (
@@ -185,7 +185,7 @@ export default function ContactPage() {
                 />
                 {prefixInvalid && (
                   <p className="bengali text-red-400 text-xs mt-1.5">
-                    ⚠️ অবৈধ নম্বর — বাংলাদেশের বৈধ নম্বর দিন (017/013/019/014/018/016/015)।
+                    ⚠️ Invalid number. Please enter your valid phone number.
                   </p>
                 )}
                 {!prefixInvalid && phoneDigits > 0 && phoneDigits < 11 && (
@@ -230,7 +230,7 @@ export default function ContactPage() {
                 <div className="flex items-center justify-between mt-1">
                   {msgTooLong ? (
                     <p className="bengali text-red-400 text-xs">
-                      ⚠️ বার্তা সর্বোচ্চ ১০০০ অক্ষরের মধ্যে হতে হবে।
+                      ⚠️ Message must be 1,000 characters allowed.
                     </p>
                   ) : (
                     <span />
