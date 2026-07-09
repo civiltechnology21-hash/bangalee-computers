@@ -7,11 +7,11 @@ import ProductCard from '@/components/ProductCard'
 import PolicyNotice from '@/components/PolicyNotice'
 
 const TABS = [
-  { key: 'all',         label: 'সব',           en: 'All' },
-  { key: 'new',         label: 'নতুন ল্যাপটপ',  en: 'New Laptop' },
-  { key: 'used',        label: 'পুরনো ল্যাপটপ', en: 'Used Laptop' },
-  { key: 'accessories', label: 'আনুষাঙ্গিক',    en: 'Accessories' },
-  { key: 'services',    label: 'সার্ভিস',        en: 'Services' },
+  { key: 'all',         label: 'All',           en: 'All' },
+  { key: 'new',         label: 'New Laptop',  en: 'New Laptop' },
+  { key: 'used',        label: 'Used Laptop', en: 'Used Laptop' },
+  { key: 'accessories', label: 'Accessories',    en: 'Accessories' },
+  { key: 'services',    label: 'Services',        en: 'Services' },
 ]
 
 export default function ProductsClient() {
@@ -79,7 +79,7 @@ export default function ProductsClient() {
     <div className="max-w-7xl mx-auto px-4 py-10">
       <div className="mb-8">
         <h1 className="font-outfit font-bold text-3xl sm:text-4xl text-white mb-2">Product Catalog</h1>
-        <p className="bengali text-slate-400">আমাদের সব পণ্য এখানে দেখুন</p>
+        <p className="bengali text-slate-400">আমাদের সব Product's এখানে দেখুন</p>
       </div>
 
       <div className="mb-8">
@@ -120,7 +120,7 @@ export default function ProductsClient() {
         </div>
       </div>
 
-      <p className="text-slate-500 text-sm mb-5">{filtered.length} টি পণ্য পাওয়া গেছে</p>
+      <p className="text-slate-500 text-sm mb-5">{filtered.length} Products Found</p>
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -139,7 +139,7 @@ export default function ProductsClient() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-20">
           <div className="text-5xl mb-4">🔍</div>
-          <p className="bengali text-slate-400">কোনো পণ্য পাওয়া যায়নি</p>
+          <p className="bengali text-slate-400">কোনো Product পাওয়া যায়নি</p>
           <button onClick={() => { setSearch(''); setTab('all') }} className="mt-4 text-bc-blue text-sm hover:underline">সব দেখুন</button>
         </div>
       ) : (
