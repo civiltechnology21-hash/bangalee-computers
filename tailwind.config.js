@@ -10,26 +10,26 @@ module.exports = {
     extend: {
 
       /* ─────────────────────────────────────────
-         COLOR SYSTEM  — Warm Amber / Dark Tech
+         COLOR SYSTEM  — Deep Black + Golden
       ───────────────────────────────────────── */
       colors: {
         bc: {
-          bg:           '#0d0a05',
-          surface:      '#161008',
-          card:         '#1e1508',
-          border:       '#2d2010',
-          blue:         '#d97706',
-          'blue-light': '#fbbf24',
-          'blue-dark':  '#b45309',
-          cyan:         '#f59e0b',
+          bg:           '#0a0d0f',
+          surface:      '#0f1318',
+          card:         '#141a20',
+          border:       '#1e2830',
+          blue:         '#ffbf00',
+          'blue-light': '#ffd740',
+          'blue-dark':  '#e6a800',
+          cyan:         '#ffc929',
           wa:           '#22c55e',
           'wa-dark':    '#16a34a',
-          amber:        '#d97706',
+          amber:        '#ffbf00',
           red:          '#ef4444',
           purple:       '#a855f7',
-          text:         '#fef9f0',
-          muted:        '#a8956d',
-          subtle:       '#6b5a3a',
+          text:         '#f8fafc',
+          muted:        '#8a9ab0',
+          subtle:       '#4a5a6a',
         },
       },
 
@@ -50,20 +50,20 @@ module.exports = {
       ───────────────────────────────────────── */
       backgroundImage: {
         'hero-ambient':
-          'radial-gradient(ellipse 80% 60% at 15% 50%, rgba(217,119,6,0.12) 0%, transparent 60%),' +
-          'radial-gradient(ellipse 60% 70% at 85% 20%, rgba(245,158,11,0.08) 0%, transparent 55%)',
+          'radial-gradient(ellipse 80% 60% at 15% 50%, rgba(255,191,0,0.08) 0%, transparent 60%),' +
+          'radial-gradient(ellipse 60% 70% at 85% 20%, rgba(255,191,0,0.05) 0%, transparent 55%)',
 
         'surface-gradient':
-          'linear-gradient(180deg, #161008 0%, #0d0a05 100%)',
+          'linear-gradient(180deg, #0f1318 0%, #0a0d0f 100%)',
 
         'card-gradient':
-          'linear-gradient(145deg, #251a08 0%, #1e1508 100%)',
+          'linear-gradient(145deg, #181f28 0%, #141a20 100%)',
 
         'blue-gradient':
-          'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
+          'linear-gradient(135deg, #ffbf00 0%, #e6a800 100%)',
 
         'metallic-text':
-          'linear-gradient(135deg, #fef9f0 0%, #a8956d 100%)',
+          'linear-gradient(135deg, #ffffff 0%, #ffd740 100%)',
       },
 
       /* ─────────────────────────────────────────
@@ -71,13 +71,13 @@ module.exports = {
       ───────────────────────────────────────── */
       boxShadow: {
         'card':       '0 2px 12px rgba(0,0,0,0.50)',
-        'card-hover': '0 16px 40px rgba(0,0,0,0.60), 0 0 0 1px rgba(217,119,6,0.30)',
-        'blue-soft':  '0 6px 24px rgba(217,119,6,0.35)',
+        'card-hover': '0 16px 40px rgba(0,0,0,0.60), 0 0 0 1px rgba(255,191,0,0.25)',
+        'blue-soft':  '0 6px 24px rgba(255,191,0,0.30)',
         'wa-soft':    '0 6px 20px rgba(34,197,94,0.30)',
         'inset-top':  'inset 0 1px 0 rgba(255,255,255,0.04)',
-        'navbar':     '0 1px 0 rgba(45,32,16,0.9), 0 4px 16px rgba(0,0,0,0.40)',
+        'navbar':     '0 1px 0 rgba(30,40,48,0.9), 0 4px 16px rgba(0,0,0,0.40)',
         'modal':      '0 24px 64px rgba(0,0,0,0.80)',
-        'input-focus':'0 0 0 3px rgba(217,119,6,0.28)',
+        'input-focus':'0 0 0 3px rgba(255,191,0,0.22)',
       },
 
       /* ─────────────────────────────────────────
@@ -111,7 +111,6 @@ module.exports = {
         'fade-up-d1': 'fadeUp 0.60s 0.12s cubic-bezier(0.4,0,0.2,1) forwards',
         'fade-up-d2': 'fadeUp 0.60s 0.24s cubic-bezier(0.4,0,0.2,1) forwards',
         'fade-up-d3': 'fadeUp 0.60s 0.36s cubic-bezier(0.4,0,0.2,1) forwards',
-
         'hero-pulse': 'heroPulse 8s ease-in-out infinite alternate',
         'orb-drift':  'orbDrift 12s ease-in-out infinite alternate',
         'wa-pulse':   'waPulse 2.4s cubic-bezier(0.4,0,0.6,1) infinite',
@@ -138,12 +137,12 @@ module.exports = {
           '100%': { transform: 'translate(10px, -8px) scale(1.03)' },
         },
         waPulse: {
-          '0%, 100%': { boxShadow: '0 0 0 0   rgba(34,197,94,0.55)' },
+          '0%, 100%': { boxShadow: '0 0 0 0    rgba(34,197,94,0.55)' },
           '50%':      { boxShadow: '0 0 0 14px rgba(34,197,94,0)' },
         },
         navBorderPulse: {
-          '0%':   { borderBottomColor: 'rgba(217,119,6,0.12)' },
-          '100%': { borderBottomColor: 'rgba(217,119,6,0.32)' },
+          '0%':   { borderBottomColor: 'rgba(255,191,0,0.10)' },
+          '100%': { borderBottomColor: 'rgba(255,191,0,0.30)' },
         },
         ctaFloat: {
           '0%, 100%': { transform: 'translateY(0px)' },
@@ -155,15 +154,9 @@ module.exports = {
         },
       },
 
-      /* ─────────────────────────────────────────
-         SPACING & Z-INDEX
-      ───────────────────────────────────────── */
       spacing: {
-        '18': '4.5rem',
-        '22': '5.5rem',
-        '72': '18rem',
-        '84': '21rem',
-        '96': '24rem',
+        '18': '4.5rem', '22': '5.5rem',
+        '72': '18rem',  '84': '21rem', '96': '24rem',
       },
 
       zIndex: {
