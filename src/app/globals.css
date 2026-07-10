@@ -8,18 +8,23 @@
    DESIGN TOKENS
 ───────────────────────────────────────────── */
 :root {
-  --bc-bg:          #0d0a05;
-  --bc-surface:     #161008;
-  --bc-card:        #1e1508;
-  --bc-border:      #2d2010;
-  --bc-blue:        #d97706;
-  --bc-blue-light:  #fbbf24;
-  --bc-cyan:        #f59e0b;
+  --bc-bg:          #0a0d0f;
+  --bc-surface:     #0f1318;
+  --bc-card:        #141a20;
+  --bc-border:      #1e2830;
+  --bc-blue:        #ffbf00;
+  --bc-blue-light:  #ffd740;
+  --bc-cyan:        #ffc929;
   --bc-wa:          #22c55e;
-  --bc-amber:       #d97706;
+  --bc-amber:       #ffbf00;
   --bc-red:         #ef4444;
-  --bc-text:        #fef9f0;
-  --bc-muted:       #a8956d;
+  --bc-text:        #f8fafc;
+  --bc-muted:       #8a9ab0;
+
+  /* Circuit line color */
+  --circuit-color:  rgba(255,191,0,0.12);
+  --circuit-bright: rgba(255,191,0,0.28);
+  --circuit-dot:    rgba(255,191,0,0.50);
 }
 
 /* ─────────────────────────────────────────────
@@ -40,6 +45,78 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
+  /* Circuit board pattern — entire site */
+  background-image:
+    /* Horizontal lines */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      var(--circuit-color) 39px,
+      var(--circuit-color) 40px
+    ),
+    /* Vertical lines */
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 39px,
+      var(--circuit-color) 39px,
+      var(--circuit-color) 40px
+    );
+  background-size: 40px 40px;
+  background-attachment: fixed;
+}
+
+/* Circuit dot nodes at grid intersections */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle 1.8px at 0px 0px, var(--circuit-dot) 0%, transparent 100%);
+  background-size: 40px 40px;
+  background-attachment: fixed;
+  pointer-events: none;
+  z-index: 0;
+  animation: circuitPulse 6s ease-in-out infinite alternate;
+}
+
+/* Golden trace highlights — random bright segments */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    /* Horizontal bright traces */
+    linear-gradient(90deg, transparent 0%, transparent 20%, var(--circuit-bright) 20%, var(--circuit-bright) 22%, transparent 22%, transparent 45%, var(--circuit-bright) 45%, var(--circuit-bright) 47%, transparent 47%, transparent 100%),
+    linear-gradient(90deg, transparent 0%, transparent 60%, var(--circuit-bright) 60%, var(--circuit-bright) 62%, transparent 62%, transparent 80%, var(--circuit-bright) 80%, var(--circuit-bright) 82%, transparent 82%, transparent 100%),
+    /* Vertical bright traces */
+    linear-gradient(0deg, transparent 0%, transparent 30%, var(--circuit-bright) 30%, var(--circuit-bright) 32%, transparent 32%, transparent 65%, var(--circuit-bright) 65%, var(--circuit-bright) 67%, transparent 67%, transparent 100%),
+    linear-gradient(0deg, transparent 0%, transparent 10%, var(--circuit-bright) 10%, var(--circuit-bright) 12%, transparent 12%, transparent 50%, var(--circuit-bright) 50%, var(--circuit-bright) 52%, transparent 52%, transparent 100%);
+  background-size: 400px 400px, 600px 600px, 400px 400px, 700px 700px;
+  background-attachment: fixed;
+  pointer-events: none;
+  z-index: 0;
+  animation: traceShift 12s ease-in-out infinite alternate;
+  opacity: 0.6;
+}
+
+@keyframes circuitPulse {
+  0%   { opacity: 0.5; }
+  50%  { opacity: 1.0; }
+  100% { opacity: 0.6; }
+}
+
+@keyframes traceShift {
+  0%   { opacity: 0.4; transform: translate(0px, 0px); }
+  50%  { opacity: 0.7; transform: translate(2px, 1px); }
+  100% { opacity: 0.3; transform: translate(-1px, 2px); }
+}
+
+/* All page content must sit above the circuit bg */
+#__next, main, header, footer, nav, section, div.relative {
+  position: relative;
+  z-index: 1;
 }
 
 .bengali { font-family: 'Hind Siliguri', sans-serif; }
@@ -56,14 +133,14 @@ body {
    GRADIENT TEXT
 ───────────────────────────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, #fef9f0 0%, #fbbf24 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #ffbf00 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-warm {
-  background: linear-gradient(135deg, #d97706 0%, #ef4444 100%);
+  background: linear-gradient(135deg, #ffbf00 0%, #ef4444 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -73,9 +150,9 @@ body {
    BADGE SYSTEM
 ───────────────────────────────────────────── */
 .badge-new         { background: rgba(34,197,94,0.12);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
-.badge-used        { background: rgba(217,119,6,0.15);  color: #fbbf24; border: 1px solid rgba(217,119,6,0.30); }
+.badge-used        { background: rgba(255,191,0,0.12);  color: #ffd740; border: 1px solid rgba(255,191,0,0.28); }
 .badge-accessories { background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
-.badge-services    { background: rgba(217,119,6,0.12);  color: #d97706; border: 1px solid rgba(217,119,6,0.25); }
+.badge-services    { background: rgba(255,191,0,0.10);  color: #ffbf00; border: 1px solid rgba(255,191,0,0.22); }
 
 /* ─────────────────────────────────────────────
    SHIMMER
@@ -96,84 +173,37 @@ body {
 }
 
 /* ─────────────────────────────────────────────
-   NEURAL NETWORK BACKGROUND  (hero only)
-   SVG-based animated node + edge pattern
+   HERO AMBIENT GLOW
 ───────────────────────────────────────────── */
 .hero-bg-animate {
-  position: relative;
   background:
-    radial-gradient(ellipse 80% 60% at 15% 50%, rgba(217,119,6,0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 70% at 85% 20%, rgba(245,158,11,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 60% at 15% 50%, rgba(255,191,0,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 70% at 85% 20%, rgba(255,191,0,0.05) 0%, transparent 55%),
     var(--bc-bg);
+  animation: heroPulse 8s ease-in-out infinite alternate;
 }
 
-.hero-bg-animate::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle 1.5px at 10% 15%,  rgba(217,119,6,0.55) 0%, transparent 100%),
-    radial-gradient(circle 1px  at 25% 60%,   rgba(217,119,6,0.40) 0%, transparent 100%),
-    radial-gradient(circle 2px  at 40% 30%,   rgba(245,158,11,0.50) 0%, transparent 100%),
-    radial-gradient(circle 1px  at 55% 75%,   rgba(217,119,6,0.35) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 70% 20%,  rgba(245,158,11,0.45) 0%, transparent 100%),
-    radial-gradient(circle 1px  at 80% 55%,   rgba(217,119,6,0.40) 0%, transparent 100%),
-    radial-gradient(circle 2px  at 90% 35%,   rgba(245,158,11,0.50) 0%, transparent 100%),
-    radial-gradient(circle 1px  at 15% 80%,   rgba(217,119,6,0.30) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 60% 10%,  rgba(245,158,11,0.45) 0%, transparent 100%),
-    radial-gradient(circle 1px  at 35% 90%,   rgba(217,119,6,0.35) 0%, transparent 100%),
-    radial-gradient(circle 1px  at 75% 80%,   rgba(245,158,11,0.30) 0%, transparent 100%),
-    radial-gradient(circle 2px  at 5%  50%,   rgba(217,119,6,0.45) 0%, transparent 100%),
-    radial-gradient(circle 1px  at 95% 70%,   rgba(245,158,11,0.35) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 50% 50%,  rgba(217,119,6,0.60) 0%, transparent 100%);
-  pointer-events: none;
-  z-index: 0;
-  animation: nodesPulse 6s ease-in-out infinite alternate;
-}
-
-.hero-bg-animate::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    /* diagonal lines simulating neural connections */
-    linear-gradient(125deg, transparent 0%, transparent 49.5%, rgba(217,119,6,0.06) 49.5%, rgba(217,119,6,0.06) 50.5%, transparent 50.5%, transparent 100%),
-    linear-gradient(55deg,  transparent 0%, transparent 29.5%, rgba(245,158,11,0.05) 29.5%, rgba(245,158,11,0.05) 30.5%, transparent 30.5%, transparent 100%),
-    linear-gradient(95deg,  transparent 0%, transparent 59.5%, rgba(217,119,6,0.04) 59.5%, rgba(217,119,6,0.04) 60.5%, transparent 60.5%, transparent 100%),
-    linear-gradient(145deg, transparent 0%, transparent 39.5%, rgba(245,158,11,0.05) 39.5%, rgba(245,158,11,0.05) 40.5%, transparent 40.5%, transparent 100%),
-    linear-gradient(75deg,  transparent 0%, transparent 69.5%, rgba(217,119,6,0.04) 69.5%, rgba(217,119,6,0.04) 70.5%, transparent 70.5%, transparent 100%);
-  pointer-events: none;
-  z-index: 0;
-  animation: linesShift 10s ease-in-out infinite alternate;
-}
-
-@keyframes nodesPulse {
-  0%   { opacity: 0.5; transform: scale(1); }
-  50%  { opacity: 1.0; transform: scale(1.02); }
-  100% { opacity: 0.6; transform: scale(0.99); }
-}
-
-@keyframes linesShift {
-  0%   { opacity: 0.4; }
-  50%  { opacity: 0.8; }
-  100% { opacity: 0.3; }
+@keyframes heroPulse {
+  0%   { opacity: 0.85; }
+  50%  { opacity: 1.00; }
+  100% { opacity: 0.75; }
 }
 
 /* ─────────────────────────────────────────────
-   FLOATING ORBS  (hero only)
+   FLOATING ORBS
 ───────────────────────────────────────────── */
 .orb {
   position: absolute;
   border-radius: 50%;
   filter: blur(72px);
-  opacity: 0.15;
+  opacity: 0.12;
   pointer-events: none;
   animation: orbDrift 12s ease-in-out infinite alternate;
 }
 
-.orb-blue   { background: #d97706; animation-duration: 12s; }
-.orb-cyan   { background: #f59e0b; animation-duration: 16s; animation-delay: -4s; }
-.orb-indigo { background: #b45309; animation-duration: 20s; animation-delay: -8s; }
+.orb-blue   { background: #ffbf00; animation-duration: 12s; }
+.orb-cyan   { background: #ffd740; animation-duration: 16s; animation-delay: -4s; }
+.orb-indigo { background: #e6a800; animation-duration: 20s; animation-delay: -8s; }
 
 @keyframes orbDrift {
   0%   { transform: translate(0px, 0px)    scale(1); }
@@ -190,8 +220,8 @@ body {
 }
 
 @keyframes navBorderPulse {
-  0%   { border-bottom-color: rgba(217,119,6,0.15); }
-  100% { border-bottom-color: rgba(217,119,6,0.38); }
+  0%   { border-bottom-color: rgba(255,191,0,0.10); }
+  100% { border-bottom-color: rgba(255,191,0,0.30); }
 }
 
 /* ─────────────────────────────────────────────
@@ -263,8 +293,8 @@ body {
 
 .card-hover:hover {
   transform:    translateY(-5px) scale(1.01);
-  box-shadow:   0 16px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(217,119,6,0.35);
-  border-color: rgba(217,119,6,0.45) !important;
+  box-shadow:   0 16px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,191,0,0.30);
+  border-color: rgba(255,191,0,0.40) !important;
 }
 
 /* ─────────────────────────────────────────────
@@ -275,8 +305,8 @@ body {
   align-items: center;
   gap: 0.5rem;
   background-color: var(--bc-blue);
-  color: #ffffff;
-  font-weight: 600;
+  color: #0a0d0f;
+  font-weight: 700;
   border-radius: 0.5rem;
   padding: 0.6rem 1.25rem;
   border: none;
@@ -288,9 +318,9 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: #b45309;
+  background-color: #e6a800;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(217,119,6,0.40);
+  box-shadow: 0 6px 20px rgba(255,191,0,0.40);
 }
 
 .btn-primary:active { transform: translateY(0); }
@@ -321,10 +351,10 @@ body {
   padding: 1px;
   background: linear-gradient(
     135deg,
-    rgba(217,119,6,0.55) 0%,
+    rgba(255,191,0,0.50) 0%,
     transparent 40%,
     transparent 60%,
-    rgba(245,158,11,0.35) 100%
+    rgba(255,215,64,0.30) 100%
   );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
@@ -343,6 +373,6 @@ body {
 /* ─────────────────────────────────────────────
    LEGACY COMPAT
 ───────────────────────────────────────────── */
-.blue-glow { box-shadow: 0 0 20px rgba(217,119,6,0.22); }
-.cyan-glow { box-shadow: 0 0 20px rgba(245,158,11,0.16); }
+.blue-glow { box-shadow: 0 0 20px rgba(255,191,0,0.20); }
+.cyan-glow { box-shadow: 0 0 20px rgba(255,215,64,0.15); }
 .grid-bg   { /* intentionally empty */ }
