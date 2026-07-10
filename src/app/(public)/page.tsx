@@ -9,6 +9,127 @@ import ProductCard from '@/components/ProductCard'
 import PolicyNotice from '@/components/PolicyNotice'
 import { BUSINESS, SERVICES } from '@/lib/constants'
 
+// ─── Neural Network Background Canvas ───────────────────────
+function NeuralCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let animId: number
+    let w = 0, h = 0
+
+    const AMBER       = 'rgba(217,119,6,'
+    const AMBER_LIGHT = 'rgba(245,158,11,'
+
+    interface Node {
+      x: number; y: number
+      vx: number; vy: number
+      r: number; opacity: number
+      pulse: number; pulseSpeed: number
+    }
+
+    let nodes: Node[] = []
+
+    function resize() {
+      w = canvas.offsetWidth
+      h = canvas.offsetHeight
+      canvas.width  = w
+      canvas.height = h
+      initNodes()
+    }
+
+    function initNodes() {
+      const count = Math.floor((w * h) / 18000)
+      nodes = Array.from({ length: Math.max(18, Math.min(count, 45)) }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 2.5 + 1.2,
+        opacity: Math.random() * 0.5 + 0.3,
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: Math.random() * 0.025 + 0.010,
+      }))
+    }
+
+    function draw(t: number) {
+      ctx.clearRect(0, 0, w, h)
+
+      // Update nodes
+      for (const n of nodes) {
+        n.x += n.vx
+        n.y += n.vy
+        n.pulse += n.pulseSpeed
+        if (n.x < 0 || n.x > w) n.vx *= -1
+        if (n.y < 0 || n.y > h) n.vy *= -1
+      }
+
+      // Draw connections
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x
+          const dy = nodes[i].y - nodes[j].y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          const maxDist = 160
+          if (dist < maxDist) {
+            const alpha = (1 - dist / maxDist) * 0.25
+            ctx.beginPath()
+            ctx.moveTo(nodes[i].x, nodes[i].y)
+            ctx.lineTo(nodes[j].x, nodes[j].y)
+            ctx.strokeStyle = AMBER + alpha + ')'
+            ctx.lineWidth = 0.8
+            ctx.stroke()
+          }
+        }
+      }
+
+      // Draw nodes
+      for (const n of nodes) {
+        const pulse = Math.sin(n.pulse + t * 0.001) * 0.3 + 0.7
+        const alpha = n.opacity * pulse
+
+        // Outer glow
+        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 4)
+        grad.addColorStop(0, AMBER_LIGHT + (alpha * 0.6) + ')')
+        grad.addColorStop(1, AMBER + '0)')
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, n.r * 4, 0, Math.PI * 2)
+        ctx.fillStyle = grad
+        ctx.fill()
+
+        // Core dot
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2)
+        ctx.fillStyle = AMBER_LIGHT + alpha + ')'
+        ctx.fill()
+      }
+
+      animId = requestAnimationFrame(draw)
+    }
+
+    resize()
+    window.addEventListener('resize', resize)
+    animId = requestAnimationFrame(draw)
+
+    return () => {
+      cancelAnimationFrame(animId)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      style={{ zIndex: 0 }}
+    />
+  )
+}
+
 // ─── Live settings from Supabase ─────────────────────────
 function useSettings() {
   const [settings, setSettings] = useState({
@@ -433,10 +554,15 @@ export default function HomePage() {
   return (
     <>
       {/* ─── HERO ───────────────────────────────────────── */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden grid-bg">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden" style={{background:'#0d0a05'}}>
+
+        {/* Neural Network Canvas */}
+        <NeuralCanvas />
+
+        {/* Ambient orbs */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-bc-blue/10 blur-[100px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-bc-cyan/8 blur-[90px]" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-bc-blue/10 blur-[120px]" />
+          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-bc-cyan/8 blur-[100px]" />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 py-20 w-full">
