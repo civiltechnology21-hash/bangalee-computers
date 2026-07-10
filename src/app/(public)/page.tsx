@@ -9,29 +9,6 @@ import ProductCard from '@/components/ProductCard'
 import PolicyNotice from '@/components/PolicyNotice'
 import { BUSINESS, SERVICES } from '@/lib/constants'
 
-// ─── Neural Network Background Canvas ───────────────────────
-function NeuralCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    let animId: number
-    let w = 0, h = 0
-
-    const AMBER       = 'rgba(217,119,6,'
-    const AMBER_LIGHT = 'rgba(245,158,11,'
-
-    interface Node {
-      x: number; y: number
-      vx: number; vy: number
-      r: number; opacity: number
-      pulse: number; pulseSpeed: number
-    }
-
     let nodes: Node[] = []
 
     function resize() {
@@ -554,12 +531,7 @@ export default function HomePage() {
   return (
     <>
       {/* ─── HERO ───────────────────────────────────────── */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden" style={{background:'#0d0a05'}}>
-
-        {/* Neural Network Canvas */}
-        <NeuralCanvas />
-
-        {/* Ambient orbs */}
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-bc-blue/10 blur-[120px]" />
           <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-bc-cyan/8 blur-[100px]" />
