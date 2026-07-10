@@ -8,18 +8,18 @@
    DESIGN TOKENS
 ───────────────────────────────────────────── */
 :root {
-  --bc-bg:          #0a0f1d;
-  --bc-surface:     #111827;
-  --bc-card:        #162032;
-  --bc-border:      #1e293b;
-  --bc-blue:        #2563eb;
-  --bc-blue-light:  #60a5fa;
-  --bc-cyan:        #38bdf8;
+  --bc-bg:          #0d0a05;
+  --bc-surface:     #161008;
+  --bc-card:        #1e1508;
+  --bc-border:      #2d2010;
+  --bc-blue:        #d97706;
+  --bc-blue-light:  #fbbf24;
+  --bc-cyan:        #f59e0b;
   --bc-wa:          #22c55e;
-  --bc-amber:       #f59e0b;
+  --bc-amber:       #d97706;
   --bc-red:         #ef4444;
-  --bc-text:        #f8fafc;
-  --bc-muted:       #94a3b8;
+  --bc-text:        #fef9f0;
+  --bc-muted:       #a8956d;
 }
 
 /* ─────────────────────────────────────────────
@@ -31,9 +31,7 @@
   padding: 0;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   background-color: var(--bc-bg);
@@ -44,9 +42,7 @@ body {
   line-height: 1.6;
 }
 
-.bengali {
-  font-family: 'Hind Siliguri', sans-serif;
-}
+.bengali { font-family: 'Hind Siliguri', sans-serif; }
 
 /* ─────────────────────────────────────────────
    SCROLLBAR
@@ -57,17 +53,17 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--bc-blue); }
 
 /* ─────────────────────────────────────────────
-   GRADIENT TEXT  (elegant metallic — no neon)
+   GRADIENT TEXT
 ───────────────────────────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, #f8fafc 0%, var(--bc-blue-light) 100%);
+  background: linear-gradient(135deg, #fef9f0 0%, #fbbf24 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-warm {
-  background: linear-gradient(135deg, var(--bc-amber) 0%, var(--bc-red) 100%);
+  background: linear-gradient(135deg, #d97706 0%, #ef4444 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -77,12 +73,12 @@ body {
    BADGE SYSTEM
 ───────────────────────────────────────────── */
 .badge-new         { background: rgba(34,197,94,0.12);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
-.badge-used        { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+.badge-used        { background: rgba(217,119,6,0.15);  color: #fbbf24; border: 1px solid rgba(217,119,6,0.30); }
 .badge-accessories { background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
-.badge-services    { background: rgba(37,99,235,0.12);  color: #60a5fa; border: 1px solid rgba(37,99,235,0.25); }
+.badge-services    { background: rgba(217,119,6,0.12);  color: #d97706; border: 1px solid rgba(217,119,6,0.25); }
 
 /* ─────────────────────────────────────────────
-   SHIMMER  (loading skeleton)
+   SHIMMER
 ───────────────────────────────────────────── */
 .shimmer {
   background: linear-gradient(90deg,
@@ -100,86 +96,116 @@ body {
 }
 
 /* ─────────────────────────────────────────────
-   HERO  — infinite ambient background pulse
-   (replaces aggressive grid/neon; very subtle)
+   NEURAL NETWORK BACKGROUND  (hero only)
+   SVG-based animated node + edge pattern
 ───────────────────────────────────────────── */
 .hero-bg-animate {
+  position: relative;
   background:
-    radial-gradient(ellipse 80% 60% at 15% 50%, rgba(37,99,235,0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 70% at 85% 20%, rgba(56,189,248,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 60% at 15% 50%, rgba(217,119,6,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 70% at 85% 20%, rgba(245,158,11,0.07) 0%, transparent 55%),
     var(--bc-bg);
-  animation: heroPulse 8s ease-in-out infinite alternate;
 }
 
-@keyframes heroPulse {
-  0%   {
-    background:
-      radial-gradient(ellipse 80% 60% at 15% 50%, rgba(37,99,235,0.10) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 70% at 85% 20%, rgba(56,189,248,0.07) 0%, transparent 55%),
-      var(--bc-bg);
-  }
-  50%  {
-    background:
-      radial-gradient(ellipse 90% 65% at 25% 45%, rgba(37,99,235,0.14) 0%, transparent 60%),
-      radial-gradient(ellipse 65% 75% at 75% 30%, rgba(56,189,248,0.09) 0%, transparent 55%),
-      var(--bc-bg);
-  }
-  100% {
-    background:
-      radial-gradient(ellipse 75% 55% at 10% 55%, rgba(37,99,235,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 55% 65% at 90% 15%, rgba(56,189,248,0.06) 0%, transparent 55%),
-      var(--bc-bg);
-  }
+.hero-bg-animate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle 1.5px at 10% 15%,  rgba(217,119,6,0.55) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 25% 60%,   rgba(217,119,6,0.40) 0%, transparent 100%),
+    radial-gradient(circle 2px  at 40% 30%,   rgba(245,158,11,0.50) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 55% 75%,   rgba(217,119,6,0.35) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 70% 20%,  rgba(245,158,11,0.45) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 80% 55%,   rgba(217,119,6,0.40) 0%, transparent 100%),
+    radial-gradient(circle 2px  at 90% 35%,   rgba(245,158,11,0.50) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 15% 80%,   rgba(217,119,6,0.30) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 60% 10%,  rgba(245,158,11,0.45) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 35% 90%,   rgba(217,119,6,0.35) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 75% 80%,   rgba(245,158,11,0.30) 0%, transparent 100%),
+    radial-gradient(circle 2px  at 5%  50%,   rgba(217,119,6,0.45) 0%, transparent 100%),
+    radial-gradient(circle 1px  at 95% 70%,   rgba(245,158,11,0.35) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 50% 50%,  rgba(217,119,6,0.60) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+  animation: nodesPulse 6s ease-in-out infinite alternate;
+}
+
+.hero-bg-animate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    /* diagonal lines simulating neural connections */
+    linear-gradient(125deg, transparent 0%, transparent 49.5%, rgba(217,119,6,0.06) 49.5%, rgba(217,119,6,0.06) 50.5%, transparent 50.5%, transparent 100%),
+    linear-gradient(55deg,  transparent 0%, transparent 29.5%, rgba(245,158,11,0.05) 29.5%, rgba(245,158,11,0.05) 30.5%, transparent 30.5%, transparent 100%),
+    linear-gradient(95deg,  transparent 0%, transparent 59.5%, rgba(217,119,6,0.04) 59.5%, rgba(217,119,6,0.04) 60.5%, transparent 60.5%, transparent 100%),
+    linear-gradient(145deg, transparent 0%, transparent 39.5%, rgba(245,158,11,0.05) 39.5%, rgba(245,158,11,0.05) 40.5%, transparent 40.5%, transparent 100%),
+    linear-gradient(75deg,  transparent 0%, transparent 69.5%, rgba(217,119,6,0.04) 69.5%, rgba(217,119,6,0.04) 70.5%, transparent 70.5%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+  animation: linesShift 10s ease-in-out infinite alternate;
+}
+
+@keyframes nodesPulse {
+  0%   { opacity: 0.5; transform: scale(1); }
+  50%  { opacity: 1.0; transform: scale(1.02); }
+  100% { opacity: 0.6; transform: scale(0.99); }
+}
+
+@keyframes linesShift {
+  0%   { opacity: 0.4; }
+  50%  { opacity: 0.8; }
+  100% { opacity: 0.3; }
 }
 
 /* ─────────────────────────────────────────────
-   FLOATING ORBS  (hero section only — infinite)
+   FLOATING ORBS  (hero only)
 ───────────────────────────────────────────── */
 .orb {
   position: absolute;
   border-radius: 50%;
   filter: blur(72px);
-  opacity: 0.18;
+  opacity: 0.15;
   pointer-events: none;
   animation: orbDrift 12s ease-in-out infinite alternate;
 }
 
-.orb-blue  { background: #2563eb; animation-duration: 12s; }
-.orb-cyan  { background: #38bdf8; animation-duration: 16s; animation-delay: -4s; }
-.orb-indigo { background: #4f46e5; animation-duration: 20s; animation-delay: -8s; }
+.orb-blue   { background: #d97706; animation-duration: 12s; }
+.orb-cyan   { background: #f59e0b; animation-duration: 16s; animation-delay: -4s; }
+.orb-indigo { background: #b45309; animation-duration: 20s; animation-delay: -8s; }
 
 @keyframes orbDrift {
-  0%   { transform: translate(0px, 0px)   scale(1); }
+  0%   { transform: translate(0px, 0px)    scale(1); }
   33%  { transform: translate(24px, -18px) scale(1.06); }
   66%  { transform: translate(-16px, 14px) scale(0.96); }
   100% { transform: translate(10px, -8px)  scale(1.03); }
 }
 
 /* ─────────────────────────────────────────────
-   NAVBAR  — slim trust-indicator bar (infinite)
-   (a clean border-bottom glow that breathes)
+   NAVBAR BORDER GLOW
 ───────────────────────────────────────────── */
 .navbar-border-glow {
   animation: navBorderPulse 4s ease-in-out infinite alternate;
 }
 
 @keyframes navBorderPulse {
-  0%   { border-bottom-color: rgba(37,99,235,0.15); }
-  100% { border-bottom-color: rgba(37,99,235,0.35); }
+  0%   { border-bottom-color: rgba(217,119,6,0.15); }
+  100% { border-bottom-color: rgba(217,119,6,0.38); }
 }
 
 /* ─────────────────────────────────────────────
-   WHATSAPP BUTTON  — ring pulse (infinite)
+   WHATSAPP PULSE
 ───────────────────────────────────────────── */
 .wa-pulse { animation: waPulse 2.4s cubic-bezier(0.4,0,0.6,1) infinite; }
 
 @keyframes waPulse {
-  0%, 100% { box-shadow: 0 0 0 0   rgba(34,197,94,0.55); }
+  0%, 100% { box-shadow: 0 0 0 0    rgba(34,197,94,0.55); }
   50%       { box-shadow: 0 0 0 14px rgba(34,197,94,0); }
 }
 
 /* ─────────────────────────────────────────────
-   SCROLL REVEAL  (JS adds .revealed class)
+   SCROLL REVEAL
 ───────────────────────────────────────────── */
 .reveal {
   opacity: 0;
@@ -187,20 +213,14 @@ body {
   transition: opacity 0.55s cubic-bezier(0.4,0,0.2,1),
               transform 0.55s cubic-bezier(0.4,0,0.2,1);
 }
+.reveal.revealed { opacity: 1; transform: translateY(0); }
 
-.reveal.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* staggered delays for child items */
 .reveal-d1 { transition-delay: 0.10s; }
 .reveal-d2 { transition-delay: 0.20s; }
 .reveal-d3 { transition-delay: 0.30s; }
 .reveal-d4 { transition-delay: 0.40s; }
 .reveal-d5 { transition-delay: 0.50s; }
 
-/* slide from left */
 .reveal-left {
   opacity: 0;
   transform: translateX(-28px);
@@ -209,7 +229,6 @@ body {
 }
 .reveal-left.revealed  { opacity: 1; transform: translateX(0); }
 
-/* slide from right */
 .reveal-right {
   opacity: 0;
   transform: translateX(28px);
@@ -219,7 +238,7 @@ body {
 .reveal-right.revealed { opacity: 1; transform: translateX(0); }
 
 /* ─────────────────────────────────────────────
-   PAGE ENTRY  (first paint — no scroll needed)
+   PAGE ENTRY
 ───────────────────────────────────────────── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }
@@ -233,7 +252,7 @@ body {
 .fade-up-d4 { animation: fadeUp 0.60s 0.48s cubic-bezier(0.4,0,0.2,1) forwards; opacity: 0; }
 
 /* ─────────────────────────────────────────────
-   CARD HOVER  (physical lift — no neon explosion)
+   CARD HOVER
 ───────────────────────────────────────────── */
 .card-hover {
   transition:
@@ -244,12 +263,12 @@ body {
 
 .card-hover:hover {
   transform:    translateY(-5px) scale(1.01);
-  box-shadow:   0 16px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(37,99,235,0.30);
-  border-color: rgba(37,99,235,0.40) !important;
+  box-shadow:   0 16px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(217,119,6,0.35);
+  border-color: rgba(217,119,6,0.45) !important;
 }
 
 /* ─────────────────────────────────────────────
-   BUTTON HOVER  (primary — blue solid)
+   BUTTON PRIMARY
 ───────────────────────────────────────────── */
 .btn-primary {
   display: inline-flex;
@@ -269,29 +288,25 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: #1d4ed8;
+  background-color: #b45309;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(37,99,235,0.35);
+  box-shadow: 0 6px 20px rgba(217,119,6,0.40);
 }
 
-.btn-primary:active {
-  transform: translateY(0);
-}
+.btn-primary:active { transform: translateY(0); }
 
 /* ─────────────────────────────────────────────
-   FLOATING CTA  (bottom-right WA button — subtle drift)
+   FLOATING CTA
 ───────────────────────────────────────────── */
-.float-cta {
-  animation: ctaFloat 5s ease-in-out infinite;
-}
+.float-cta { animation: ctaFloat 5s ease-in-out infinite; }
 
 @keyframes ctaFloat {
-  0%,100% { transform: translateY(0px); }
-  50%     { transform: translateY(-6px); }
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
 }
 
 /* ─────────────────────────────────────────────
-   STAT COUNTER CARDS  (infinite shimmer border)
+   STAT CARD BORDER
 ───────────────────────────────────────────── */
 .stat-card-border {
   position: relative;
@@ -306,10 +321,10 @@ body {
   padding: 1px;
   background: linear-gradient(
     135deg,
-    rgba(37,99,235,0.5) 0%,
+    rgba(217,119,6,0.55) 0%,
     transparent 40%,
     transparent 60%,
-    rgba(56,189,248,0.3) 100%
+    rgba(245,158,11,0.35) 100%
   );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
@@ -326,8 +341,8 @@ body {
 }
 
 /* ─────────────────────────────────────────────
-   LEGACY COMPAT  (keep old class names working)
+   LEGACY COMPAT
 ───────────────────────────────────────────── */
-.blue-glow { box-shadow: 0 0 20px rgba(37,99,235,0.20); }
-.cyan-glow { box-shadow: 0 0 20px rgba(56,189,248,0.15); }
-.grid-bg   { /* intentionally empty — grid removed */ }
+.blue-glow { box-shadow: 0 0 20px rgba(217,119,6,0.22); }
+.cyan-glow { box-shadow: 0 0 20px rgba(245,158,11,0.16); }
+.grid-bg   { /* intentionally empty */ }
