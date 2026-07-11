@@ -10,8 +10,10 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-bc-border bg-bc-bg/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-md"
+      style={{ backgroundColor: 'rgba(14,23,23,0.92)', borderBottom: '1px solid #1E2E2D' }}>
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
           <img
@@ -20,8 +22,8 @@ export default function Navbar() {
             className="w-9 h-9 rounded-lg object-cover group-hover:scale-110 transition-transform shadow-lg"
           />
           <div className="leading-none">
-            <div className="font-outfit font-bold text-white text-sm tracking-wide">Bangalee</div>
-            <div className="bengali text-xs text-bc-cyan font-medium">কম্পিউটার্স</div>
+            <div className="font-outfit font-bold text-sm tracking-wide" style={{ color: '#f8fafc' }}>Bangalee</div>
+            <div className="bengali text-xs font-medium" style={{ color: '#FFBF00' }}>কম্পিউটার্স</div>
           </div>
         </Link>
 
@@ -31,19 +33,33 @@ export default function Navbar() {
             <Link
               key={l.href}
               href={l.href}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+              className="px-3 py-1.5 rounded-md text-sm font-medium transition-all"
+              style={
                 pathname === l.href
-                  ? 'text-bc-blue bg-bc-blue/10'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
+                  ? { color: '#FFBF00', backgroundColor: 'rgba(255,191,0,0.10)' }
+                  : { color: '#D1D5DB' }
+              }
+              onMouseEnter={e => {
+                if (pathname !== l.href) {
+                  (e.currentTarget as HTMLElement).style.color = '#FFBF00'
+                  ;(e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,191,0,0.06)'
+                }
+              }}
+              onMouseLeave={e => {
+                if (pathname !== l.href) {
+                  (e.currentTarget as HTMLElement).style.color = '#D1D5DB'
+                  ;(e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
+                }
+              }}
             >
               {l.labelEn}
             </Link>
           ))}
         </nav>
 
-        {/* Right side */}
+        {/* Right */}
         <div className="flex items-center gap-2">
+          {/* WhatsApp — unchanged */}
           <a
             href={BUSINESS.whatsapp}
             target="_blank"
@@ -56,10 +72,11 @@ export default function Navbar() {
             WhatsApp
           </a>
 
-          {/* Mobile menu toggle */}
+          {/* Mobile toggle */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden p-2 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+            className="md:hidden p-2 rounded-md transition-colors"
+            style={{ color: '#D1D5DB' }}
             aria-label="Toggle menu"
           >
             <div className="w-5 h-4 flex flex-col justify-between">
@@ -73,21 +90,24 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-bc-border bg-bc-surface px-4 py-3 space-y-1">
+        <div className="md:hidden px-4 py-3 space-y-1"
+          style={{ borderTop: '1px solid #1E2E2D', backgroundColor: '#122020' }}>
           {NAV_LINKS.map(l => (
             <Link
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className={`block px-3 py-2.5 rounded-md text-sm font-medium transition-all ${
+              className="block px-3 py-2.5 rounded-md text-sm font-medium transition-all"
+              style={
                 pathname === l.href
-                  ? 'text-bc-blue bg-bc-blue/10'
-                  : 'text-slate-300 hover:text-white hover:bg-white/5'
-              }`}
+                  ? { color: '#FFBF00', backgroundColor: 'rgba(255,191,0,0.10)' }
+                  : { color: '#D1D5DB' }
+              }
             >
-              {l.labelEn} <span className="bengali text-slate-500 ml-1">{l.label}</span>
+              {l.labelEn} <span className="bengali ml-1" style={{ color: '#FFBF00', opacity: 0.6 }}>{l.label}</span>
             </Link>
           ))}
+          {/* WhatsApp — unchanged */}
           <a
             href={BUSINESS.whatsapp}
             target="_blank"
