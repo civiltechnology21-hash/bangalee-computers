@@ -5,76 +5,110 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+
   theme: {
     extend: {
+
       colors: {
         bc: {
-          bg:      '#090e1a',
-          surface: '#0f1729',
-          card:    '#111d35',
-          border:  '#1a2744',
-          blue:    '#3b82f6',
-          'blue-light': '#60a5fa',
-          cyan:    '#22d3ee',
-          wa:      '#22c55e',
-          amber:   '#f59e0b',
-          red:     '#ef4444',
-          purple:  '#a855f7',
-        }
+          bg:          '#0E1717',
+          surface:     '#122020',
+          card:        '#162626',
+          border:      '#1E2E2D',
+          gold:        '#FFBF00',
+          'gold-dark': '#cc9900',
+          'gold-light':'#ffda60',
+          blue:        '#2563eb',
+          'blue-light':'#60a5fa',
+          cyan:        '#22d3ee',
+          wa:          '#22c55e',
+          'wa-dark':   '#16a34a',
+          amber:       '#f59e0b',
+          red:         '#ef4444',
+          purple:      '#a855f7',
+          text:        '#D1D5DB',
+          'text-dark': '#111827',
+          muted:       '#6b7280',
+        },
       },
+
       fontFamily: {
         outfit:  ['Outfit', 'sans-serif'],
         bengali: ['"Hind Siliguri"', 'sans-serif'],
       },
+
       backgroundImage: {
-        'grid-pattern': `
-          linear-gradient(rgba(26,39,68,0.4) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(26,39,68,0.4) 1px, transparent 1px)
-        `,
-        'hero-glow': `
-          radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.12) 0%, transparent 50%),
-          radial-gradient(ellipse at 80% 20%, rgba(34,211,238,0.10) 0%, transparent 50%)
-        `,
+        'circuit':
+          'linear-gradient(to right, #1E2E2D 1px, transparent 1px),' +
+          'linear-gradient(to bottom, #1E2E2D 1px, transparent 1px),' +
+          'radial-gradient(circle, #FFBF00 1.2px, transparent 1.2px)',
+
+        'gold-gradient':
+          'linear-gradient(135deg, #FFBF00 0%, #ffda60 100%)',
+
+        'card-gradient':
+          'linear-gradient(145deg, #1a2a2a 0%, #162626 100%)',
       },
+
       backgroundSize: {
-        'grid-40': '40px 40px',
+        'circuit': '48px 48px, 48px 48px, 48px 48px',
       },
+
+      boxShadow: {
+        'card':        '0 2px 12px rgba(0,0,0,0.40)',
+        'card-hover':  '0 16px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,191,0,0.28)',
+        'gold-soft':   '0 6px 24px rgba(255,191,0,0.30)',
+        'gold-glow':   '0 0 20px rgba(255,191,0,0.25)',
+        'wa-soft':     '0 6px 20px rgba(34,197,94,0.30)',
+        'input-focus': '0 0 0 3px rgba(255,191,0,0.25)',
+      },
+
+      transitionTimingFunction: {
+        'bc': 'cubic-bezier(0.4, 0, 0.2, 1)',
+      },
+
       animation: {
-        'float':      'float 4s ease-in-out infinite',
-        'wa-pulse':   'waPulse 2s ease-in-out infinite',
-        'fade-up':    'fadeUp 0.6s ease forwards',
-        'shimmer':    'shimmer 2s linear infinite',
-        'glow':       'glow 3s ease-in-out infinite alternate',
+        'fade-up':    'fadeUp 0.60s cubic-bezier(0.4,0,0.2,1) forwards',
+        'fade-up-d1': 'fadeUp 0.60s 0.12s cubic-bezier(0.4,0,0.2,1) forwards',
+        'fade-up-d2': 'fadeUp 0.60s 0.24s cubic-bezier(0.4,0,0.2,1) forwards',
+        'fade-up-d3': 'fadeUp 0.60s 0.36s cubic-bezier(0.4,0,0.2,1) forwards',
+        'wa-pulse':   'waPulse 2.4s cubic-bezier(0.4,0,0.6,1) infinite',
+        'cta-float':  'ctaFloat 5s ease-in-out infinite',
+        'shimmer':    'shimmer 1.6s linear infinite',
       },
+
       keyframes: {
-        float: {
-          '0%,100%': { transform: 'translateY(0)' },
-          '50%':     { transform: 'translateY(-8px)' },
-        },
-        waPulse: {
-          '0%':   { boxShadow: '0 0 0 0 rgba(34,197,94,0.6)' },
-          '70%':  { boxShadow: '0 0 0 14px rgba(34,197,94,0)' },
-          '100%': { boxShadow: '0 0 0 0 rgba(34,197,94,0)' },
-        },
         fadeUp: {
           from: { opacity: '0', transform: 'translateY(24px)' },
           to:   { opacity: '1', transform: 'translateY(0)' },
         },
+        waPulse: {
+          '0%, 100%': { boxShadow: '0 0 0 0   rgba(34,197,94,0.55)' },
+          '50%':      { boxShadow: '0 0 0 14px rgba(34,197,94,0)' },
+        },
+        ctaFloat: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%':      { transform: 'translateY(-6px)' },
+        },
         shimmer: {
-          '0%':   { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
-        },
-        glow: {
-          from: { boxShadow: '0 0 20px rgba(59,130,246,0.3)' },
-          to:   { boxShadow: '0 0 40px rgba(34,211,238,0.5)' },
+          '0%':   { backgroundPosition:  '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
         },
       },
-      boxShadow: {
-        'blue-glow':  '0 0 24px rgba(59,130,246,0.25)',
-        'cyan-glow':  '0 0 24px rgba(34,211,238,0.25)',
-        'card-hover': '0 12px 40px rgba(59,130,246,0.15)',
+
+      spacing: {
+        '18': '4.5rem',
+        '22': '5.5rem',
       },
+
+      zIndex: {
+        '60':  '60',
+        '70':  '70',
+        '100': '100',
+      },
+
     },
   },
+
   plugins: [],
 }
