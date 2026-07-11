@@ -15,9 +15,12 @@ export default function ProductCard({ product }: { product: Product }) {
   const waLink = `${BUSINESS.whatsapp}?text=${WA_PRODUCT_MSG(product.name)}`
 
   return (
-    <div className="card-hover group relative bg-bc-card border border-bc-border rounded-2xl overflow-hidden flex flex-col">
-      {/* Image / Icon area */}
-      <div className="relative h-44 bg-gradient-to-br from-bc-surface to-bc-bg flex items-center justify-center overflow-hidden">
+    <div className="card-hover group relative rounded-2xl overflow-hidden flex flex-col"
+      style={{ backgroundColor: '#162626', border: '1px solid #1E2E2D' }}>
+
+      {/* Image area */}
+      <div className="relative h-44 flex items-center justify-center overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #122020 0%, #0E1717 100%)' }}>
         {product.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -28,14 +31,18 @@ export default function ProductCard({ product }: { product: Product }) {
         ) : (
           <span className="text-6xl">{icon}</span>
         )}
+
         {/* Category badge */}
         <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full ${cat?.badge}`}>
           {cat?.en}
         </span>
-        {/* Out of stock overlay */}
+
+        {/* Out of stock */}
         {!product.in_stock && (
-          <div className="absolute inset-0 bg-bc-bg/70 flex items-center justify-center">
-            <span className="bengali text-red-400 font-bold text-sm bg-bc-bg/80 px-3 py-1 rounded-full border border-red-500/30">
+          <div className="absolute inset-0 flex items-center justify-center"
+            style={{ backgroundColor: 'rgba(14,23,23,0.75)' }}>
+            <span className="bengali font-bold text-sm px-3 py-1 rounded-full"
+              style={{ color: '#ef4444', backgroundColor: 'rgba(14,23,23,0.85)', border: '1px solid rgba(239,68,68,0.30)' }}>
               স্টক নেই
             </span>
           </div>
@@ -44,23 +51,30 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* Info */}
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-semibold text-white text-base leading-snug mb-1">{product.name}</h3>
+        <h3 className="font-semibold text-base leading-snug mb-1" style={{ color: '#FFBF00' }}>
+          {product.name}
+        </h3>
         {product.name_bn && (
-          <p className="text-slate-400 text-xs mb-2 whitespace-pre-wrap leading-relaxed">{product.name_bn}</p>
+          <p className="text-xs mb-2 whitespace-pre-wrap leading-relaxed" style={{ color: '#D1D5DB', opacity: 0.75 }}>
+            {product.name_bn}
+          </p>
         )}
         {product.specs && (
-          <p className="text-slate-400 text-xs leading-relaxed mb-3 flex-1">{product.specs}</p>
+          <p className="text-xs leading-relaxed mb-3 flex-1" style={{ color: '#D1D5DB', opacity: 0.65 }}>
+            {product.specs}
+          </p>
         )}
 
         {/* Price */}
         {product.price && (
           <div className="mb-3">
-            <span className="font-bold text-lg gradient-text">{product.price}</span>
+            <span className="font-bold text-lg" style={{ color: '#FFBF00' }}>{product.price}</span>
           </div>
         )}
 
         {/* CTAs */}
         <div className="flex items-center gap-2 mt-auto">
+          {/* WhatsApp — unchanged */}
           <a
             href={waLink}
             target="_blank"
@@ -72,10 +86,21 @@ export default function ProductCard({ product }: { product: Product }) {
             </svg>
             WhatsApp
           </a>
+
+          {/* Call button — golden outline */}
           <a
             href={`tel:${BUSINESS.phone1}`}
-            className="px-3 py-2.5 rounded-xl border border-bc-border hover:border-bc-blue/50 text-slate-400 hover:text-bc-blue transition-all"
+            className="px-3 py-2.5 rounded-xl transition-all hover:scale-105"
             title="Call"
+            style={{ border: '1.5px solid rgba(255,191,0,0.35)', color: '#FFBF00' }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = '#FFBF00'
+              ;(e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,191,0,0.08)'
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,191,0,0.35)'
+              ;(e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
+            }}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
