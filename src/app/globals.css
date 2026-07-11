@@ -34,6 +34,69 @@ body {
   font-family: 'Outfit', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /*
+   * PCB / Motherboard circuit pattern — applied to entire site body.
+   * Layers (bottom to top):
+   *   1. Horizontal grid lines  — thin teal traces
+   *   2. Vertical grid lines    — thin teal traces
+   *   3. Golden pads at every intersection
+   *   4. Short diagonal branch traces (45°) — mimics PCB routing
+   *   5. Short diagonal branch traces (135°)
+   */
+  background-image:
+    /* 1. Horizontal traces */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 59px,
+      #1E2E2D     59px,
+      #1E2E2D     60px
+    ),
+    /* 2. Vertical traces */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 59px,
+      #1E2E2D     59px,
+      #1E2E2D     60px
+    ),
+    /* 3. Golden solder pads at intersections */
+    radial-gradient(circle, rgba(255,191,0,0.55) 1.5px, transparent 1.5px),
+    /* 4. Diagonal branch traces NW→SE */
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 18px,
+      rgba(30,46,45,0.40) 18px,
+      rgba(30,46,45,0.40) 19px,
+      transparent 19px,
+      transparent 60px
+    ),
+    /* 5. Diagonal branch traces NE→SW */
+    repeating-linear-gradient(
+      135deg,
+      transparent 0px,
+      transparent 18px,
+      rgba(30,46,45,0.28) 18px,
+      rgba(30,46,45,0.28) 19px,
+      transparent 19px,
+      transparent 60px
+    );
+
+  background-size:
+    60px 60px,   /* h-traces */
+    60px 60px,   /* v-traces */
+    60px 60px,   /* pads */
+    60px 60px,   /* diag 45 */
+    60px 60px;   /* diag 135 */
+
+  background-position:
+    0 0,
+    0 0,
+    30px 30px,   /* offset pads to intersection centres */
+    0 0,
+    0 0;
 }
 
 .bengali { font-family: 'Hind Siliguri', sans-serif; }
@@ -44,28 +107,9 @@ body {
 ::-webkit-scrollbar-thumb  { background: var(--bc-border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--bc-gold); }
 
-/* ── Circuit board background ── */
-.circuit-bg {
-  background-color: var(--bc-bg);
-  background-image:
-    /* vertical lines */
-    linear-gradient(to right, #1E2E2D 1px, transparent 1px),
-    /* horizontal lines */
-    linear-gradient(to bottom, #1E2E2D 1px, transparent 1px),
-    /* golden dots at intersections */
-    radial-gradient(circle, #FFBF00 1.2px, transparent 1.2px);
-  background-size:
-    48px 48px,
-    48px 48px,
-    48px 48px;
-  background-position:
-    0 0,
-    0 0,
-    24px 24px;
-}
-
-/* legacy — keeps old class working */
-.grid-bg { @apply circuit-bg; }
+/* ── .circuit-bg / .grid-bg kept for backward compat (no-op now — body has it) ── */
+.circuit-bg { background-color: transparent; }
+.grid-bg    { background-color: transparent; }
 
 /* ── Gradient text ── */
 .gradient-text {
@@ -139,11 +183,11 @@ body {
   transition: opacity 0.55s cubic-bezier(0.4,0,0.2,1),
               transform 0.55s cubic-bezier(0.4,0,0.2,1);
 }
-.reveal.revealed          { opacity: 1; transform: translateY(0); }
-.reveal-d1                { transition-delay: 0.10s; }
-.reveal-d2                { transition-delay: 0.20s; }
-.reveal-d3                { transition-delay: 0.30s; }
-.reveal-d4                { transition-delay: 0.40s; }
+.reveal.revealed { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.10s; }
+.reveal-d2 { transition-delay: 0.20s; }
+.reveal-d3 { transition-delay: 0.30s; }
+.reveal-d4 { transition-delay: 0.40s; }
 
 .reveal-left {
   opacity: 0; transform: translateX(-28px);
