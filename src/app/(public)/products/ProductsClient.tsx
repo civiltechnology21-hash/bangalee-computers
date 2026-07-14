@@ -31,13 +31,40 @@ export default function ProductsClient() {
   const [appliedMax, setAppliedMax]       = useState<number | null>(null)
   const priceFilterActive = appliedMin !== null || appliedMax !== null
 
-  // Extract a numeric value from a price string like "৳42,000" or "42000"
-  function parsePrice(price: string | null | undefined): number | null {
+  // Bengali digit → English digit map (product prices are often entered in Bengali numerals)
+  const BN_TO_EN_DIGIT: Record<string, string> = {
+    '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4',
+    '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9',
+  }
+
+  // Extract a {min, max} price range from a free-text price string.
+  // Handles: "৳42,000" (single), "৳৪,৮০০" (Bengali digits), "5000-8000" or
+  // "৳৫,০০০ - ৳৮,০০০" (explicit range — admin can type any format).
+  // Strategy: normalize Bengali digits to English, then pull out every
+  // number-like token in the string. One number → single price (min=max).
+  // Two or more numbers → treat first as range-min, last as range-max.
+  function parsePriceRange(price: string | null | undefined): { min: number; max: number } | null {
     if (!price) return null
-    const digits = price.replace(/[^0-9.]/g, '')
-    if (!digits) return null
-    const n = parseFloat(digits)
-    return isNaN(n) ? null : n
+    const normalized = price
+      .split('')
+      .map(ch => BN_TO_EN_DIGIT[ch] ?? ch)
+      .join('')
+
+    // Match numbers like 42000, 42,000, 42000.50 — comma is a thousands
+    // separator here, not a decimal, so strip commas before parsing.
+    const matches = normalized.match(/\d[\d,]*(?:\.\d+)?/g)
+    if (!matches || matches.length === 0) return null
+
+    const numbers = matches
+      .map(m => parseFloat(m.replace(/,/g, '')))
+      .filter(n => !isNaN(n))
+
+    if (numbers.length === 0) return null
+    if (numbers.length === 1) return { min: numbers[0], max: numbers[0] }
+
+    // Multiple numbers found — treat as a range from the smallest to the
+    // largest (covers "5000-8000" and any other order/format admin uses).
+    return { min: Math.min(...numbers), max: Math.max(...numbers) }
   }
 
   const applyPriceFilter = () => {
@@ -106,15 +133,19 @@ export default function ProductsClient() {
         words.every(w => haystack.includes(w))
 
       // Price filter — products with no parseable price are excluded
-      // whenever a price filter is active.
+      // whenever a price filter is active. A product's price range and the
+      // user's chosen range are considered a match if they overlap at all
+      // (handles single prices and admin-entered ranges the same way).
       let matchPrice = true
       if (priceFilterActive) {
-        const priceNum = parsePrice(p.price)
-        if (priceNum === null) {
+        const range = parsePriceRange(p.price)
+        if (range === null) {
           matchPrice = false
         } else {
-          if (appliedMin !== null && priceNum < appliedMin) matchPrice = false
-          if (appliedMax !== null && priceNum > appliedMax) matchPrice = false
+          const userMin = appliedMin ?? -Infinity
+          const userMax = appliedMax ?? Infinity
+          // Overlap test: product range and user range intersect
+          matchPrice = range.min <= userMax && range.max >= userMin
         }
       }
 
