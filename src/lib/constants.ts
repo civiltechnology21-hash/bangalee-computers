@@ -11,7 +11,7 @@ export const BUSINESS = {
   youtube:    'https://www.youtube.com/@Bangalee_Computers_Khulna',
   instagram:  'https://www.instagram.com/bangalee_computers_khulna',
   maps:       'https://maps.google.com/?q=Bangalee+Computers+Khulna',
-  mapsEmbed:  'https://maps.google.com/maps?q=Tiger+Garden+International+Hotel+Khulna+Bangladesh&output=embed',
+  mapsEmbed:  'https://maps.google.com/maps?q=Bangalee+Computers+Khulna&output=embed',
   hours: {
     weekdays: 'শনি – বৃহস্পতি: সকাল – রাত ১০:০০',
     friday:   'শুক্রবার: বন্ধ',
