@@ -24,6 +24,36 @@ export default function ProductsClient() {
   const [search,  setSearch]          = useState('')
   const [tab,     setTab]             = useState(initCat)
 
+  // Price filter — draft values (what's typed) vs applied values (what's active)
+  const [minPriceInput, setMinPriceInput] = useState('')
+  const [maxPriceInput, setMaxPriceInput] = useState('')
+  const [appliedMin, setAppliedMin]       = useState<number | null>(null)
+  const [appliedMax, setAppliedMax]       = useState<number | null>(null)
+  const priceFilterActive = appliedMin !== null || appliedMax !== null
+
+  // Extract a numeric value from a price string like "৳42,000" or "42000"
+  function parsePrice(price: string | null | undefined): number | null {
+    if (!price) return null
+    const digits = price.replace(/[^0-9.]/g, '')
+    if (!digits) return null
+    const n = parseFloat(digits)
+    return isNaN(n) ? null : n
+  }
+
+  const applyPriceFilter = () => {
+    const min = minPriceInput.trim() === '' ? null : parseFloat(minPriceInput)
+    const max = maxPriceInput.trim() === '' ? null : parseFloat(maxPriceInput)
+    setAppliedMin(min !== null && !isNaN(min) ? min : null)
+    setAppliedMax(max !== null && !isNaN(max) ? max : null)
+  }
+
+  const clearPriceFilter = () => {
+    setMinPriceInput('')
+    setMaxPriceInput('')
+    setAppliedMin(null)
+    setAppliedMax(null)
+  }
+
   // Load products AND priority for current tab together — no race condition
   useEffect(() => {
     async function load() {
@@ -75,7 +105,20 @@ export default function ProductsClient() {
       const matchSearch = words.length === 0 ||
         words.every(w => haystack.includes(w))
 
-      return matchCat && matchSearch
+      // Price filter — products with no parseable price are excluded
+      // whenever a price filter is active.
+      let matchPrice = true
+      if (priceFilterActive) {
+        const priceNum = parsePrice(p.price)
+        if (priceNum === null) {
+          matchPrice = false
+        } else {
+          if (appliedMin !== null && priceNum < appliedMin) matchPrice = false
+          if (appliedMax !== null && priceNum > appliedMax) matchPrice = false
+        }
+      }
+
+      return matchCat && matchSearch && matchPrice
     })
     .sort((a, b) => {
       const pa = priorityMap[a.id] ?? Infinity
@@ -126,6 +169,70 @@ export default function ProductsClient() {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* ─── PRICE RANGE FILTER ─────────────────── */}
+      <div className="bg-bc-card border border-bc-border rounded-2xl p-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+          <div className="flex items-center gap-2 text-slate-400 text-sm shrink-0 mb-1 sm:mb-0">
+            <svg className="w-4 h-4 text-bc-blue" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 10v2m0-10a4.535 4.535 0 013 0" />
+            </svg>
+            <span className="bengali font-medium">প্রাইস রেঞ্জ</span>
+          </div>
+
+          <div className="flex items-center gap-2 flex-1">
+            <div className="flex-1 max-w-[140px]">
+              <input
+                type="number"
+                min={0}
+                placeholder="সর্বনিম্ন ৳"
+                value={minPriceInput}
+                onChange={e => setMinPriceInput(e.target.value)}
+                className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-bc-blue/50 transition-colors"
+              />
+            </div>
+            <span className="text-slate-600">—</span>
+            <div className="flex-1 max-w-[140px]">
+              <input
+                type="number"
+                min={0}
+                placeholder="সর্বোচ্চ ৳"
+                value={maxPriceInput}
+                onChange={e => setMaxPriceInput(e.target.value)}
+                className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-bc-blue/50 transition-colors"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={applyPriceFilter}
+              className="bg-gradient-to-r from-bc-blue to-bc-cyan text-white font-semibold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition-all hover:scale-105"
+            >
+              ফিল্টার প্রয়োগ করুন
+            </button>
+            {priceFilterActive && (
+              <button
+                onClick={clearPriceFilter}
+                className="text-slate-500 hover:text-white text-sm px-2 transition-colors"
+                title="Clear price filter"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+
+        {priceFilterActive && (
+          <p className="bengali text-slate-500 text-xs mt-3">
+            সক্রিয় ফিল্টার:{' '}
+            {appliedMin !== null ? `৳${appliedMin.toLocaleString()}` : 'যেকোনো'}
+            {' — '}
+            {appliedMax !== null ? `৳${appliedMax.toLocaleString()}` : 'যেকোনো'}
+            {tab !== 'all' && ` (শুধু ${TABS.find(t => t.key === tab)?.label} ক্যাটাগরিতে)`}
+          </p>
+        )}
       </div>
 
       <p className="text-slate-500 text-sm mb-5">{filtered.length} Products Found</p>
