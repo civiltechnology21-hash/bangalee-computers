@@ -62,11 +62,19 @@ export default function ProductsClient() {
   const filtered = products
     .filter(p => {
       const matchCat = tab === 'all' || p.category === tab
-      const q = search.toLowerCase()
-      const matchSearch = !q ||
-        p.name.toLowerCase().includes(q) ||
-        (p.specs ?? '').toLowerCase().includes(q) ||
-        (p.name_bn ?? '').includes(q)
+
+      // Combine all searchable text into one haystack
+      const haystack = [p.name, p.specs ?? '', p.name_bn ?? '']
+        .join(' ')
+        .toLowerCase()
+
+      // Split query into words — every word must appear somewhere in the
+      // combined fields (order-independent), so "lenovo i5" matches even
+      // when "lenovo" is in the name and "i5" is only in specs.
+      const words = search.toLowerCase().trim().split(/\s+/).filter(Boolean)
+      const matchSearch = words.length === 0 ||
+        words.every(w => haystack.includes(w))
+
       return matchCat && matchSearch
     })
     .sort((a, b) => {
@@ -139,8 +147,8 @@ export default function ProductsClient() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-20">
           <div className="text-5xl mb-4">🔍</div>
-          <p className="bengali text-slate-400">কোনো Product পাওয়া যায়নি</p>
-          <button onClick={() => { setSearch(''); setTab('all') }} className="mt-4 text-bc-blue text-sm hover:underline">সব দেখুন</button>
+          <p className="bengali text-slate-400">No products found.</p>
+          <button onClick={() => { setSearch(''); setTab('all') }} className="mt-4 text-bc-blue text-sm hover:underline">View all products</button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
