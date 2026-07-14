@@ -323,7 +323,7 @@ export default function ContactPage() {
           <div className="bg-bc-card border border-bc-border rounded-2xl overflow-hidden">
             <div className="h-48 bg-bc-surface">
               <iframe
-                src="https://maps.google.com/maps?q=Tiger+Garden+International+Hotel+KDA+Avenue+Khulna+Bangladesh&output=embed"
+                src={BUSINESS.mapsEmbed}
                 width="100%" height="100%"
                 style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}
                 allowFullScreen loading="lazy"
