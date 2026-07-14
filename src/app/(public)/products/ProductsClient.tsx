@@ -130,7 +130,7 @@ export default function ProductsClient() {
     <div className="max-w-7xl mx-auto px-4 py-10">
       <div className="mb-8">
         <h1 className="font-outfit font-bold text-3xl sm:text-4xl text-white mb-2">Product Catalog</h1>
-        <p className="bengali text-slate-400">আমাদের সব Product's এখানে দেখুন</p>
+        <p className="bengali text-slate-400">See all our products here.</p>
       </div>
 
       <div className="mb-8">
@@ -172,66 +172,56 @@ export default function ProductsClient() {
       </div>
 
       {/* ─── PRICE RANGE FILTER ─────────────────── */}
-      <div className="bg-bc-card border border-bc-border rounded-2xl p-4 mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-end gap-3">
-          <div className="flex items-center gap-2 text-slate-400 text-sm shrink-0 mb-1 sm:mb-0">
-            <svg className="w-4 h-4 text-bc-blue" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 10v2m0-10a4.535 4.535 0 013 0" />
-            </svg>
-            <span className="bengali font-medium">প্রাইস রেঞ্জ</span>
-          </div>
-
-          <div className="flex items-center gap-2 flex-1">
-            <div className="flex-1 max-w-[140px]">
-              <input
-                type="number"
-                min={0}
-                placeholder="সর্বনিম্ন ৳"
-                value={minPriceInput}
-                onChange={e => setMinPriceInput(e.target.value)}
-                className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-bc-blue/50 transition-colors"
-              />
-            </div>
-            <span className="text-slate-600">—</span>
-            <div className="flex-1 max-w-[140px]">
-              <input
-                type="number"
-                min={0}
-                placeholder="সর্বোচ্চ ৳"
-                value={maxPriceInput}
-                onChange={e => setMaxPriceInput(e.target.value)}
-                className="w-full bg-bc-surface border border-bc-border rounded-xl px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-bc-blue/50 transition-colors"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={applyPriceFilter}
-              className="bg-gradient-to-r from-bc-blue to-bc-cyan text-white font-semibold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition-all hover:scale-105"
-            >
-              ফিল্টার প্রয়োগ করুন
-            </button>
-            {priceFilterActive && (
-              <button
-                onClick={clearPriceFilter}
-                className="text-slate-500 hover:text-white text-sm px-2 transition-colors"
-                title="Clear price filter"
-              >
-                ✕
-              </button>
-            )}
-          </div>
+      <div className="inline-flex flex-wrap items-center gap-2 bg-bc-card border border-bc-border rounded-xl px-3 py-2.5 mb-6">
+        <div className="flex items-center gap-1.5 text-slate-400 text-xs font-medium shrink-0">
+          <svg className="w-3.5 h-3.5 text-bc-blue" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 10v2m0-10a4.535 4.535 0 013 0" />
+          </svg>
+          Price Range
         </div>
 
+        <input
+          type="number"
+          min={0}
+          placeholder="Min ৳"
+          value={minPriceInput}
+          onChange={e => setMinPriceInput(e.target.value)}
+          className="w-24 bg-bc-surface border border-bc-border rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-bc-blue/50 transition-colors"
+        />
+        <span className="text-slate-600 text-xs">–</span>
+        <input
+          type="number"
+          min={0}
+          placeholder="Max ৳"
+          value={maxPriceInput}
+          onChange={e => setMaxPriceInput(e.target.value)}
+          className="w-24 bg-bc-surface border border-bc-border rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-bc-blue/50 transition-colors"
+        />
+
+        <button
+          onClick={applyPriceFilter}
+          className="bg-gradient-to-r from-bc-blue to-bc-cyan text-white font-semibold px-3.5 py-1.5 rounded-lg text-xs hover:opacity-90 transition-all whitespace-nowrap"
+        >
+          Filter Price
+        </button>
+
         {priceFilterActive && (
-          <p className="bengali text-slate-500 text-xs mt-3">
-            সক্রিয় ফিল্টার:{' '}
-            {appliedMin !== null ? `৳${appliedMin.toLocaleString()}` : 'যেকোনো'}
-            {' — '}
-            {appliedMax !== null ? `৳${appliedMax.toLocaleString()}` : 'যেকোনো'}
-            {tab !== 'all' && ` (শুধু ${TABS.find(t => t.key === tab)?.label} ক্যাটাগরিতে)`}
-          </p>
+          <button
+            onClick={clearPriceFilter}
+            className="text-slate-500 hover:text-white text-xs px-1 transition-colors"
+            title="Clear price filter"
+          >
+            ✕
+          </button>
+        )}
+
+        {priceFilterActive && (
+          <span className="bengali text-slate-500 text-[11px] w-full mt-0.5">
+            {appliedMin !== null ? `৳${appliedMin.toLocaleString()}` : 'Any'}
+            {' – '}
+            {appliedMax !== null ? `৳${appliedMax.toLocaleString()}` : 'Any'}
+            {tab !== 'all' && ` · ${TABS.find(t => t.key === tab)?.label} only`}
+          </span>
         )}
       </div>
 
