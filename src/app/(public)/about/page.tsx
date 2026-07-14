@@ -168,7 +168,7 @@ export default function AboutPage() {
             </div>
             <div className="relative h-64 bg-bc-surface">
               <iframe
-                src="https://maps.google.com/maps?q=Tiger+Garden+International+Hotel+KDA+Avenue+Khulna+Bangladesh&output=embed"
+                src={BUSINESS.mapsEmbed}
                 width="100%"
                 height="100%"
                 style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}
