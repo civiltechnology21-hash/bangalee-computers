@@ -22,12 +22,50 @@ function WhatsAppIcon({ className = 'w-4 h-4' }: { className?: string }) {
   )
 }
 
-function CallIcon({ className = 'w-4 h-4' }: { className?: string }) {
+function TrolleyIcon({ className = 'w-4 h-4', filled = false }: { className?: string; filled?: boolean }) {
   return (
-    <svg className={className} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+    <svg className={className} fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l3.6-8H5.4M7 13L5.4 5M7 13l-1.4 5.6A1 1 0 006.56 20H18M9 20a1 1 0 100 2 1 1 0 000-2zm9 0a1 1 0 100 2 1 1 0 000-2z" />
     </svg>
   )
+}
+
+// ─── Cart (localStorage only, no DB) ────────────────────
+const CART_KEY = 'bc_cart'
+const CART_EVENT = 'bc-cart-updated'
+
+function readCart(): string[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const raw = window.localStorage.getItem(CART_KEY)
+    const items = raw ? JSON.parse(raw) : []
+    return Array.isArray(items) ? items : []
+  } catch {
+    return []
+  }
+}
+
+function writeCart(ids: string[]) {
+  window.localStorage.setItem(CART_KEY, JSON.stringify(ids))
+  window.dispatchEvent(new Event(CART_EVENT))
+}
+
+function isInCart(id: string): boolean {
+  return readCart().includes(id)
+}
+
+function toggleCart(id: string): boolean {
+  const ids = readCart()
+  const idx = ids.indexOf(id)
+  if (idx >= 0) {
+    ids.splice(idx, 1)
+    writeCart(ids)
+    return false
+  } else {
+    ids.push(id)
+    writeCart(ids)
+    return true
+  }
 }
 
 // ─── Expanded Modal ──────────────────────────────────────
@@ -35,6 +73,15 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
   const cat = CATEGORY_LABELS[product.category]
   const icon = categoryIcons[product.category] ?? '📦'
   const waLink = `${BUSINESS.whatsapp}?text=${WA_PRODUCT_MSG(product.name)}`
+  const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    setSaved(isInCart(product.id))
+  }, [product.id])
+
+  function handleToggleCart() {
+    setSaved(toggleCart(product.id))
+  }
 
   // Lock body scroll while modal is open
   useEffect(() => {
@@ -142,22 +189,26 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
               WhatsApp
             </a>
 
-            <a
-              href={`tel:${BUSINESS.phone1}`}
+            <button
+              onClick={handleToggleCart}
               className="px-4 py-3 rounded-xl transition-all hover:scale-105"
-              title="Call"
-              style={{ border: '1.5px solid rgba(255,191,0,0.35)', color: '#FFBF00' }}
+              title={saved ? 'কার্ট থেকে সরান' : 'কার্টে সেভ করুন'}
+              style={
+                saved
+                  ? { border: '1.5px solid #FFBF00', color: '#FFBF00', backgroundColor: 'rgba(255,191,0,0.10)' }
+                  : { border: '1.5px solid rgba(255,191,0,0.35)', color: '#FFBF00' }
+              }
               onMouseEnter={e => {
                 (e.currentTarget as HTMLElement).style.borderColor = '#FFBF00'
                 ;(e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,191,0,0.08)'
               }}
               onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,191,0,0.35)'
-                ;(e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
+                (e.currentTarget as HTMLElement).style.borderColor = saved ? '#FFBF00' : 'rgba(255,191,0,0.35)'
+                ;(e.currentTarget as HTMLElement).style.backgroundColor = saved ? 'rgba(255,191,0,0.10)' : 'transparent'
               }}
             >
-              <CallIcon />
-            </a>
+              <TrolleyIcon filled={saved} />
+            </button>
           </div>
         </div>
       </div>
