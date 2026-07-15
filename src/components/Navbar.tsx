@@ -2,12 +2,50 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BUSINESS, NAV_LINKS } from '@/lib/constants'
+
+const CART_KEY = 'bc_cart'
+const CART_EVENT = 'bc-cart-updated'
+
+function getCartCount(): number {
+  if (typeof window === 'undefined') return 0
+  try {
+    const raw = window.localStorage.getItem(CART_KEY)
+    if (!raw) return 0
+    const items = JSON.parse(raw)
+    return Array.isArray(items) ? items.length : 0
+  } catch {
+    return 0
+  }
+}
+
+function TrolleyIcon({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l3.6-8H5.4M7 13L5.4 5M7 13l-1.4 5.6A1 1 0 006.56 20H18M9 20a1 1 0 100 2 1 1 0 000-2zm9 0a1 1 0 100 2 1 1 0 000-2z" />
+    </svg>
+  )
+}
 
 export default function Navbar() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const [cartCount, setCartCount] = useState(0)
+
+  useEffect(() => {
+    setCartCount(getCartCount())
+
+    function onCartUpdate() { setCartCount(getCartCount()) }
+    function onStorage(e: StorageEvent) { if (e.key === CART_KEY) setCartCount(getCartCount()) }
+
+    window.addEventListener(CART_EVENT, onCartUpdate)
+    window.addEventListener('storage', onStorage)
+    return () => {
+      window.removeEventListener(CART_EVENT, onCartUpdate)
+      window.removeEventListener('storage', onStorage)
+    }
+  }, [])
 
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur-md"
@@ -59,6 +97,32 @@ export default function Navbar() {
 
         {/* Right */}
         <div className="flex items-center gap-2">
+          {/* Cart — trolley icon */}
+          <Link
+            href="/cart"
+            aria-label="My Cart"
+            className="relative hidden md:flex items-center justify-center w-10 h-10 rounded-lg transition-all hover:scale-105"
+            style={{ color: '#D1D5DB' }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.color = '#FFBF00'
+              ;(e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,191,0,0.06)'
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.color = '#D1D5DB'
+              ;(e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
+            }}
+          >
+            <TrolleyIcon />
+            {cartCount > 0 && (
+              <span
+                className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full text-[10px] font-bold text-white"
+                style={{ backgroundColor: '#FFBF00', color: '#111827' }}
+              >
+                {cartCount > 99 ? '99+' : cartCount}
+              </span>
+            )}
+          </Link>
+
           {/* WhatsApp — unchanged */}
           <a
             href={BUSINESS.whatsapp}
@@ -107,6 +171,28 @@ export default function Navbar() {
               {l.labelEn} <span className="bengali ml-1" style={{ color: '#FFBF00', opacity: 0.6 }}>{l.label}</span>
             </Link>
           ))}
+
+          {/* Cart — mobile */}
+          <Link
+            href="/cart"
+            onClick={() => setOpen(false)}
+            className="flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-medium transition-all"
+            style={{ color: '#D1D5DB' }}
+          >
+            <span className="flex items-center gap-2">
+              <TrolleyIcon className="w-4 h-4" />
+              My Cart
+            </span>
+            {cartCount > 0 && (
+              <span
+                className="min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full text-[10px] font-bold"
+                style={{ backgroundColor: '#FFBF00', color: '#111827' }}
+              >
+                {cartCount > 99 ? '99+' : cartCount}
+              </span>
+            )}
+          </Link>
+
           {/* WhatsApp — unchanged */}
           <a
             href={BUSINESS.whatsapp}
