@@ -11,31 +11,24 @@ module.exports = {
 
       colors: {
         bc: {
-          bg:          '#f4f6f9',
-          surface:     '#eef2f8',
-          card:        '#ffffff',
-          border:      '#c7ccce',
-          metal:       '#A2AAAD',
-          tint:        '#e6effd',
-
-          gold:        '#6f95d6',
-          'gold-dark': '#4a6fae',
-          'gold-light':'#c7d9f4',
-
-          blue:        '#6f95d6',
-          'blue-light':'#a9c3ee',
-          cyan:        '#a9c3ee',
-
-          wa:          '#6f95d6',
-          'wa-dark':   '#4a6fae',
-
-          amber:       '#7d868a',
-          red:         '#5f6669',
-          purple:      '#8b9295',
-
-          text:        '#4b5457',
-          'text-dark': '#1a1f1f',
-          muted:       '#8b9295',
+          bg:          '#0E1717',
+          surface:     '#122020',
+          card:        '#162626',
+          border:      '#1E2E2D',
+          gold:        '#FFBF00',
+          'gold-dark': '#cc9900',
+          'gold-light':'#ffda60',
+          blue:        '#2563eb',
+          'blue-light':'#60a5fa',
+          cyan:        '#22d3ee',
+          wa:          '#22c55e',
+          'wa-dark':   '#16a34a',
+          amber:       '#f59e0b',
+          red:         '#ef4444',
+          purple:      '#a855f7',
+          text:        '#D1D5DB',
+          'text-dark': '#111827',
+          muted:       '#6b7280',
         },
       },
 
@@ -46,15 +39,15 @@ module.exports = {
 
       backgroundImage: {
         'circuit':
-          'linear-gradient(to right, rgba(162,170,173,0.20) 1px, transparent 1px),' +
-          'linear-gradient(to bottom, rgba(162,170,173,0.20) 1px, transparent 1px),' +
-          'radial-gradient(circle, #c7d9f4 1.6px, transparent 1.6px)',
+          'linear-gradient(to right, #1E2E2D 1px, transparent 1px),' +
+          'linear-gradient(to bottom, #1E2E2D 1px, transparent 1px),' +
+          'radial-gradient(circle, #FFBF00 1.2px, transparent 1.2px)',
 
         'gold-gradient':
-          'linear-gradient(135deg, #4a6fae 0%, #a9c3ee 100%)',
+          'linear-gradient(135deg, #FFBF00 0%, #ffda60 100%)',
 
         'card-gradient':
-          'linear-gradient(145deg, #ffffff 0%, #e6effd 100%)',
+          'linear-gradient(145deg, #1a2a2a 0%, #162626 100%)',
       },
 
       backgroundSize: {
@@ -62,12 +55,12 @@ module.exports = {
       },
 
       boxShadow: {
-        'card':        '0 2px 12px rgba(162,170,173,0.20)',
-        'card-hover':  '0 16px 40px rgba(111,149,214,0.20), 0 0 0 1px rgba(111,149,214,0.30)',
-        'gold-soft':   '0 6px 24px rgba(111,149,214,0.25)',
-        'gold-glow':   '0 0 20px rgba(111,149,214,0.20)',
-        'wa-soft':     '0 6px 20px rgba(111,149,214,0.25)',
-        'input-focus': '0 0 0 3px rgba(111,149,214,0.25)',
+        'card':        '0 2px 12px rgba(0,0,0,0.40)',
+        'card-hover':  '0 16px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,191,0,0.28)',
+        'gold-soft':   '0 6px 24px rgba(255,191,0,0.30)',
+        'gold-glow':   '0 0 20px rgba(255,191,0,0.25)',
+        'wa-soft':     '0 6px 20px rgba(34,197,94,0.30)',
+        'input-focus': '0 0 0 3px rgba(255,191,0,0.25)',
       },
 
       transitionTimingFunction: {
@@ -90,8 +83,8 @@ module.exports = {
           to:   { opacity: '1', transform: 'translateY(0)' },
         },
         waPulse: {
-          '0%, 100%': { boxShadow: '0 0 0 0   rgba(111,149,214,0.45)' },
-          '50%':      { boxShadow: '0 0 0 14px rgba(111,149,214,0)' },
+          '0%, 100%': { boxShadow: '0 0 0 0   rgba(34,197,94,0.55)' },
+          '50%':      { boxShadow: '0 0 0 14px rgba(34,197,94,0)' },
         },
         ctaFloat: {
           '0%, 100%': { transform: 'translateY(0px)' },
