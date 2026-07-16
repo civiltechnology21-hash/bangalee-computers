@@ -5,26 +5,19 @@
 @tailwind utilities;
 
 :root {
-  --bc-bg:          #6b7175;
-  --bc-surface:     #7a8084;
-  --bc-card:        #ffffff;
-  --bc-border:      rgba(162,170,173,0.30);
-  --bc-metal:       #A2AAAD;
-  --bc-tint:        #e6effd;
-
-  --bc-text-dark:   #f4f6f9;
-  --bc-text:        #d8dbde;
-  --bc-muted:       #a9adb0;
-
-  --bc-accent:       #6f95d6;
-  --bc-accent-dark:  #4a6fae;
-  --bc-accent-light: #c7d9f4;
-
-  --bc-blue:        #6f95d6;
-  --bc-cyan:        #a9c3ee;
-  --bc-wa:          #6f95d6;
-  --bc-amber:       #7d868a;
-  --bc-red:         #5f6669;
+  --bc-bg:          #0E1717;
+  --bc-surface:     #122020;
+  --bc-card:        #162626;
+  --bc-border:      #1E2E2D;
+  --bc-gold:        #FFBF00;
+  --bc-gold-dark:   #cc9900;
+  --bc-text:        #D1D5DB;
+  --bc-text-dark:   #111827;
+  --bc-blue:        #2563eb;
+  --bc-cyan:        #22d3ee;
+  --bc-wa:          #22c55e;
+  --bc-amber:       #f59e0b;
+  --bc-red:         #ef4444;
 }
 
 *, *::before, *::after {
@@ -37,7 +30,7 @@ html { scroll-behavior: smooth; }
 
 body {
   background-color: var(--bc-bg);
-  color: var(--bc-text-dark);
+  color: var(--bc-text);
   font-family: 'Outfit', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -48,16 +41,19 @@ body {
 /* ── Scrollbar ── */
 ::-webkit-scrollbar        { width: 5px; }
 ::-webkit-scrollbar-track  { background: var(--bc-bg); }
-::-webkit-scrollbar-thumb  { background: var(--bc-metal); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--bc-accent); }
+::-webkit-scrollbar-thumb  { background: var(--bc-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bc-gold); }
 
 /* ── Circuit board background ── */
 .circuit-bg {
   background-color: var(--bc-bg);
   background-image:
-    linear-gradient(to right, rgba(162,170,173,0.20) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(162,170,173,0.20) 1px, transparent 1px),
-    radial-gradient(circle, #c7d9f4 1.6px, transparent 1.6px);
+    /* vertical lines */
+    linear-gradient(to right, #1E2E2D 1px, transparent 1px),
+    /* horizontal lines */
+    linear-gradient(to bottom, #1E2E2D 1px, transparent 1px),
+    /* golden dots at intersections */
+    radial-gradient(circle, #FFBF00 1.2px, transparent 1.2px);
   background-size:
     48px 48px,
     48px 48px,
@@ -68,34 +64,35 @@ body {
     24px 24px;
 }
 
+/* legacy — keeps old class working */
 .grid-bg { @apply circuit-bg; }
 
 /* ── Gradient text ── */
 .gradient-text {
-  background: linear-gradient(135deg, #4a6fae 0%, #a9c3ee 100%);
+  background: linear-gradient(135deg, #FFBF00 0%, #ffda60 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-warm {
-  background: linear-gradient(135deg, #A2AAAD 0%, #5f6669 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 /* ── Badge system ── */
-.badge-new         { background: rgba(111,149,214,0.14); color: #3d5680; border: 1px solid rgba(111,149,214,0.30); }
-.badge-used        { background: rgba(125,134,138,0.14); color: #5f6669; border: 1px solid rgba(125,134,138,0.30); }
-.badge-accessories { background: rgba(162,170,173,0.18); color: #4b5457; border: 1px solid rgba(162,170,173,0.35); }
-.badge-services    { background: rgba(230,239,253,0.70); color: #3d5680; border: 1px solid rgba(111,149,214,0.25); }
+.badge-new         { background: rgba(34,197,94,0.12);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+.badge-used        { background: rgba(255,191,0,0.12);  color: #FFBF00; border: 1px solid rgba(255,191,0,0.25); }
+.badge-accessories { background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
+.badge-services    { background: rgba(255,191,0,0.10);  color: #FFBF00; border: 1px solid rgba(255,191,0,0.20); }
 
 /* ── Shimmer ── */
 .shimmer {
   background: linear-gradient(90deg,
     var(--bc-card) 25%,
-    var(--bc-tint) 50%,
+    var(--bc-border) 50%,
     var(--bc-card) 75%
   );
   background-size: 200% 100%;
@@ -107,12 +104,12 @@ body {
   100% { background-position: -200% 0; }
 }
 
-/* ── WhatsApp pulse ── */
+/* ── WhatsApp pulse — unchanged ── */
 .wa-pulse { animation: waPulse 2.4s cubic-bezier(0.4,0,0.6,1) infinite; }
 
 @keyframes waPulse {
-  0%, 100% { box-shadow: 0 0 0 0   rgba(111,149,214,0.45); }
-  50%       { box-shadow: 0 0 0 14px rgba(111,149,214,0); }
+  0%, 100% { box-shadow: 0 0 0 0   rgba(34,197,94,0.55); }
+  50%       { box-shadow: 0 0 0 14px rgba(34,197,94,0); }
 }
 
 /* ── Floating CTA ── */
@@ -171,11 +168,11 @@ body {
 }
 .card-hover:hover {
   transform:    translateY(-5px) scale(1.01);
-  box-shadow:   0 16px 40px rgba(111,149,214,0.20), 0 0 0 1px rgba(111,149,214,0.35);
-  border-color: rgba(111,149,214,0.45) !important;
+  box-shadow:   0 16px 40px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,191,0,0.30);
+  border-color: rgba(255,191,0,0.40) !important;
 }
 
 /* ── Glow helpers ── */
-.blue-glow { box-shadow: 0 0 20px rgba(111,149,214,0.25); }
-.cyan-glow { box-shadow: 0 0 20px rgba(169,195,238,0.25); }
-.gold-glow { box-shadow: 0 0 20px rgba(125,134,138,0.20); }
+.blue-glow { box-shadow: 0 0 20px rgba(37,99,235,0.20); }
+.cyan-glow { box-shadow: 0 0 20px rgba(34,211,238,0.15); }
+.gold-glow { box-shadow: 0 0 20px rgba(255,191,0,0.25); }
