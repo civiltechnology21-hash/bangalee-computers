@@ -5,117 +5,76 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-
   theme: {
     extend: {
-
       colors: {
         bc: {
-          bg:          '#f4f6f9',
-          surface:     '#eef2f8',
-          card:        '#ffffff',
-          border:      '#c7ccce',
-          metal:       '#A2AAAD',
-          tint:        '#e6effd',
-
-          gold:        '#6f95d6',
-          'gold-dark': '#4a6fae',
-          'gold-light':'#c7d9f4',
-
-          blue:        '#6f95d6',
-          'blue-light':'#a9c3ee',
-          cyan:        '#a9c3ee',
-
-          wa:          '#6f95d6',
-          'wa-dark':   '#4a6fae',
-
-          amber:       '#7d868a',
-          red:         '#5f6669',
-          purple:      '#8b9295',
-
-          text:        '#4b5457',
-          'text-dark': '#1a1f1f',
-          muted:       '#8b9295',
-        },
+          bg:      '#f6f6f6',
+          surface: '#e6effd',
+          card:    '#f6f6f6',
+          border:  '#A2AAAD',
+          blue:    '#A2AAAD',
+          'blue-light': '#e6effd',
+          cyan:    '#A2AAAD',
+          wa:      '#A2AAAD',
+          amber:   '#f6f6f6',
+          red:     '#A2AAAD',
+          purple:  '#e6effd',
+        }
       },
-
       fontFamily: {
         outfit:  ['Outfit', 'sans-serif'],
         bengali: ['"Hind Siliguri"', 'sans-serif'],
       },
-
       backgroundImage: {
-        'circuit':
-          'linear-gradient(to right, rgba(162,170,173,0.20) 1px, transparent 1px),' +
-          'linear-gradient(to bottom, rgba(162,170,173,0.20) 1px, transparent 1px),' +
-          'radial-gradient(circle, #c7d9f4 1.6px, transparent 1.6px)',
-
-        'gold-gradient':
-          'linear-gradient(135deg, #4a6fae 0%, #a9c3ee 100%)',
-
-        'card-gradient':
-          'linear-gradient(145deg, #ffffff 0%, #e6effd 100%)',
+        'grid-pattern': `
+          linear-gradient(rgba(162, 170, 173, 0.2) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(162, 170, 173, 0.2) 1px, transparent 1px)
+        `,
+        'hero-glow': `
+          radial-gradient(ellipse at 20% 50%, rgba(230, 239, 253, 0.8) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 20%, rgba(162, 170, 173, 0.3) 0%, transparent 50%)
+        `,
       },
-
       backgroundSize: {
-        'circuit': '48px 48px, 48px 48px, 48px 48px',
+        'grid-40': '40px 40px',
       },
-
-      boxShadow: {
-        'card':        '0 2px 12px rgba(162,170,173,0.20)',
-        'card-hover':  '0 16px 40px rgba(111,149,214,0.20), 0 0 0 1px rgba(111,149,214,0.30)',
-        'gold-soft':   '0 6px 24px rgba(111,149,214,0.25)',
-        'gold-glow':   '0 0 20px rgba(111,149,214,0.20)',
-        'wa-soft':     '0 6px 20px rgba(111,149,214,0.25)',
-        'input-focus': '0 0 0 3px rgba(111,149,214,0.25)',
-      },
-
-      transitionTimingFunction: {
-        'bc': 'cubic-bezier(0.4, 0, 0.2, 1)',
-      },
-
       animation: {
-        'fade-up':    'fadeUp 0.60s cubic-bezier(0.4,0,0.2,1) forwards',
-        'fade-up-d1': 'fadeUp 0.60s 0.12s cubic-bezier(0.4,0,0.2,1) forwards',
-        'fade-up-d2': 'fadeUp 0.60s 0.24s cubic-bezier(0.4,0,0.2,1) forwards',
-        'fade-up-d3': 'fadeUp 0.60s 0.36s cubic-bezier(0.4,0,0.2,1) forwards',
-        'wa-pulse':   'waPulse 2.4s cubic-bezier(0.4,0,0.6,1) infinite',
-        'cta-float':  'ctaFloat 5s ease-in-out infinite',
-        'shimmer':    'shimmer 1.6s linear infinite',
+        'float':      'float 4s ease-in-out infinite',
+        'wa-pulse':   'waPulse 2s ease-in-out infinite',
+        'fade-up':    'fadeUp 0.6s ease forwards',
+        'shimmer':    'shimmer 2s linear infinite',
+        'glow':       'glow 3s ease-in-out infinite alternate',
       },
-
       keyframes: {
+        float: {
+          '0%,100%': { transform: 'translateY(0)' },
+          '50%':     { transform: 'translateY(-8px)' },
+        },
+        waPulse: {
+          '0%':   { boxShadow: '0 0 0 0 rgba(162, 170, 173, 0.5)' },
+          '70%':  { boxShadow: '0 0 0 14px rgba(162, 170, 173, 0)' },
+          '100%': { boxShadow: '0 0 0 0 rgba(162, 170, 173, 0)' },
+        },
         fadeUp: {
           from: { opacity: '0', transform: 'translateY(24px)' },
           to:   { opacity: '1', transform: 'translateY(0)' },
         },
-        waPulse: {
-          '0%, 100%': { boxShadow: '0 0 0 0   rgba(111,149,214,0.45)' },
-          '50%':      { boxShadow: '0 0 0 14px rgba(111,149,214,0)' },
-        },
-        ctaFloat: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%':      { transform: 'translateY(-6px)' },
-        },
         shimmer: {
-          '0%':   { backgroundPosition:  '200% 0' },
-          '100%': { backgroundPosition: '-200% 0' },
+          '0%':   { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        glow: {
+          from: { boxShadow: '0 0 20px rgba(230, 239, 253, 0.6)' },
+          to:   { boxShadow: '0 0 40px rgba(162, 170, 173, 0.4)' },
         },
       },
-
-      spacing: {
-        '18': '4.5rem',
-        '22': '5.5rem',
+      boxShadow: {
+        'blue-glow':  '0 0 24px rgba(230, 239, 253, 0.8)',
+        'cyan-glow':  '0 0 24px rgba(162, 170, 173, 0.4)',
+        'card-hover': '0 12px 40px rgba(230, 239, 253, 0.6)',
       },
-
-      zIndex: {
-        '60':  '60',
-        '70':  '70',
-        '100': '100',
-      },
-
     },
   },
-
   plugins: [],
 }
