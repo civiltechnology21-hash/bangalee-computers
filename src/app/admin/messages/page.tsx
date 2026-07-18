@@ -100,7 +100,9 @@ export default function AdminMessagesPage() {
               className={`bg-bc-card border rounded-xl p-4 transition-all ${
                 !inq.seen ? 'border-bc-blue/30 bg-bc-blue/5' : 'border-bc-border'
               }`}>
-              <div className="flex items-start justify-between gap-4">
+
+              {/* Desktop/tablet layout — unchanged (≥768px) */}
+              <div className="hidden md:flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <span className="font-semibold text-white text-sm">{inq.name}</span>
@@ -146,6 +148,54 @@ export default function AdminMessagesPage() {
                   </button>
                   <button onClick={() => deleteInquiry(inq.id)}
                     className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all text-xs" title="Delete">
+                    🗑️
+                  </button>
+                </div>
+              </div>
+
+              {/* Mobile layout (<768px) — stacked rows, actions row at bottom */}
+              <div className="md:hidden">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className="font-semibold text-white text-sm">{inq.name}</span>
+                  {!inq.seen && (
+                    <span className="text-[10px] font-bold bg-bc-blue/20 text-bc-blue px-2 py-0.5 rounded-full border border-bc-blue/30">
+                      NEW
+                    </span>
+                  )}
+                </div>
+                <div className="text-slate-600 text-xs mb-1.5">{fmt(inq.created_at)}</div>
+                <a href={`tel:${inq.phone}`} className="block text-bc-cyan text-sm font-medium hover:text-white transition-colors mb-1.5">
+                  📞 {inq.phone}
+                </a>
+                {inq.category && (
+                  <span className="bengali inline-block text-xs text-slate-400 bg-bc-surface border border-bc-border rounded-full px-2.5 py-0.5 mb-1.5">
+                    {inq.category}
+                  </span>
+                )}
+                {inq.message && (
+                  <p className="bengali text-slate-400 text-xs mt-1 leading-relaxed bg-bc-surface/60 rounded-lg p-2 border border-bc-border/50 whitespace-pre-wrap">
+                    {inq.message}
+                  </p>
+                )}
+                <div className="flex items-center gap-1.5 mt-3">
+                  <a href={`https://wa.me/88${inq.phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent('আপনার ইনকোয়ারির জন্য ধন্যবাদ!')}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center p-2 rounded-lg bg-bc-wa/10 border border-bc-wa/25 text-bc-wa hover:bg-bc-wa/20 transition-all text-xs" title="WhatsApp">
+                    💬
+                  </a>
+                  <button
+                    onClick={() => inq.seen ? markUnseen(inq.id) : markSeen(inq.id)}
+                    className={`flex-1 flex items-center justify-center p-2 rounded-lg border text-xs transition-all ${
+                      inq.seen
+                        ? 'bg-bc-surface border-bc-border text-slate-500 hover:text-white'
+                        : 'bg-bc-blue/10 border-bc-blue/25 text-bc-blue hover:bg-bc-blue/20'
+                    }`}
+                    title={inq.seen ? 'Mark as new' : 'Mark as seen'}
+                  >
+                    {inq.seen ? '↺' : '✓'}
+                  </button>
+                  <button onClick={() => deleteInquiry(inq.id)}
+                    className="flex-1 flex items-center justify-center p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all text-xs" title="Delete">
                     🗑️
                   </button>
                 </div>
