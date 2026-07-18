@@ -5,11 +5,11 @@ import { supabase } from '@/lib/supabase'
 import type { Product } from '@/lib/supabase'
 
 const TABS = [
-  { v: 'all',         l: 'সব',            en: 'All' },
-  { v: 'new',         l: 'নতুন ল্যাপটপ',  en: 'New Laptop' },
-  { v: 'used',        l: 'পুরনো ল্যাপটপ', en: 'Used Laptop' },
-  { v: 'accessories', l: 'আনুষাঙ্গিক',    en: 'Accessories' },
-  { v: 'services',    l: 'সার্ভিস',        en: 'Services' },
+  { v: 'all',         l: 'All',            en: 'All' },
+  { v: 'new',         l: 'New Laptop',  en: 'New Laptop' },
+  { v: 'used',        l: 'Used Laptop', en: 'Used Laptop' },
+  { v: 'accessories', l: 'Accessories',    en: 'Accessories' },
+  { v: 'services',    l: 'Services',        en: 'Services' },
 ]
 
 type PriorityMap = Record<string, number | ''>  // product_id -> priority number
@@ -125,9 +125,9 @@ export default function AdminPriorityPage() {
           {saving ? (
             <><span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" /> সেভ হচ্ছে...</>
           ) : saved ? (
-            <>✅ সেভ হয়েছে</>
+            <>✅ Saved</>
           ) : (
-            <>💾 সেভ করুন</>
+            <>💾 Save</>
           )}
         </button>
       </div>
@@ -180,57 +180,107 @@ export default function AdminPriorityPage() {
             return (
               <div
                 key={p.id}
-                className={`flex items-center gap-3 bg-bc-card border rounded-xl px-4 py-3 transition-all ${
+                className={`bg-bc-card border rounded-xl px-4 py-3 transition-all ${
                   hasPriority
                     ? 'border-bc-blue/30 bg-bc-blue/5'
                     : 'border-bc-border'
                 }`}
               >
-                {/* Rank badge */}
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
-                  hasPriority ? 'bg-bc-blue/20 text-bc-blue' : 'bg-bc-surface text-slate-600'
-                }`}>
-                  {hasPriority ? val : '—'}
+                {/* Desktop/tablet layout — unchanged (≥768px) */}
+                <div className="hidden md:flex items-center gap-3">
+                  {/* Rank badge */}
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
+                    hasPriority ? 'bg-bc-blue/20 text-bc-blue' : 'bg-bc-surface text-slate-600'
+                  }`}>
+                    {hasPriority ? val : '—'}
+                  </div>
+
+                  {/* Product image */}
+                  {p.image_url ? (
+                    <img src={p.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0 bg-bc-surface" />
+                  ) : (
+                    <div className="w-10 h-10 rounded-lg bg-bc-surface shrink-0 flex items-center justify-center text-lg">💻</div>
+                  )}
+
+                  {/* Name */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white text-sm font-medium truncate">{p.name}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${
+                        p.category === 'new' ? 'badge-new' :
+                        p.category === 'used' ? 'badge-used' :
+                        p.category === 'accessories' ? 'badge-accessories' : 'badge-services'
+                      }`}>{p.category}</span>
+                      {p.price && <span className="text-slate-500 text-xs">{p.price}</span>}
+                      {isFirst && <span className="text-xs text-bc-cyan">★ Tpo</span>}
+                    </div>
+                  </div>
+
+                  {/* Priority input */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <input
+                      type="number"
+                      min={1}
+                      placeholder="—"
+                      value={val === '' || val === undefined ? '' : val}
+                      onChange={e => handlePriorityChange(p.id, e.target.value)}
+                      className="w-16 bg-bc-surface border border-bc-border focus:border-bc-blue/60 rounded-lg px-2 py-1.5 text-white text-sm text-center focus:outline-none transition-colors"
+                    />
+                    {hasPriority && (
+                      <button
+                        onClick={() => handleClear(p.id)}
+                        className="w-7 h-7 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all flex items-center justify-center text-xs"
+                        title="Priority সরান"
+                      >✕</button>
+                    )}
+                  </div>
                 </div>
 
-                {/* Product image */}
-                {p.image_url ? (
-                  <img src={p.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0 bg-bc-surface" />
-                ) : (
-                  <div className="w-10 h-10 rounded-lg bg-bc-surface shrink-0 flex items-center justify-center text-lg">💻</div>
-                )}
+                {/* Mobile layout (<768px) — 3-row: [rank+img+input+delete] / [name] / [category+price] */}
+                <div className="md:hidden space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
+                      hasPriority ? 'bg-bc-blue/20 text-bc-blue' : 'bg-bc-surface text-slate-600'
+                    }`}>
+                      {hasPriority ? val : '—'}
+                    </div>
 
-                {/* Name */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm font-medium truncate">{p.name}</p>
-                  <div className="flex items-center gap-2 mt-0.5">
+                    {p.image_url ? (
+                      <img src={p.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0 bg-bc-surface" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-lg bg-bc-surface shrink-0 flex items-center justify-center text-lg">💻</div>
+                    )}
+
+                    <div className="flex-1" />
+
+                    <input
+                      type="number"
+                      min={1}
+                      placeholder="—"
+                      value={val === '' || val === undefined ? '' : val}
+                      onChange={e => handlePriorityChange(p.id, e.target.value)}
+                      className="w-16 bg-bc-surface border border-bc-border focus:border-bc-blue/60 rounded-lg px-2 py-1.5 text-white text-sm text-center focus:outline-none transition-colors shrink-0"
+                    />
+                    {hasPriority && (
+                      <button
+                        onClick={() => handleClear(p.id)}
+                        className="w-7 h-7 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all flex items-center justify-center text-xs shrink-0"
+                        title="Priority সরান"
+                      >✕</button>
+                    )}
+                  </div>
+
+                  <p className="text-white text-sm font-medium leading-snug">{p.name}</p>
+
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className={`text-xs px-1.5 py-0.5 rounded ${
                       p.category === 'new' ? 'badge-new' :
                       p.category === 'used' ? 'badge-used' :
                       p.category === 'accessories' ? 'badge-accessories' : 'badge-services'
                     }`}>{p.category}</span>
                     {p.price && <span className="text-slate-500 text-xs">{p.price}</span>}
-                    {isFirst && <span className="text-xs text-bc-cyan">★ শীর্ষে</span>}
+                    {isFirst && <span className="text-xs text-bc-cyan">★ Top</span>}
                   </div>
-                </div>
-
-                {/* Priority input */}
-                <div className="flex items-center gap-2 shrink-0">
-                  <input
-                    type="number"
-                    min={1}
-                    placeholder="—"
-                    value={val === '' || val === undefined ? '' : val}
-                    onChange={e => handlePriorityChange(p.id, e.target.value)}
-                    className="w-16 bg-bc-surface border border-bc-border focus:border-bc-blue/60 rounded-lg px-2 py-1.5 text-white text-sm text-center focus:outline-none transition-colors"
-                  />
-                  {hasPriority && (
-                    <button
-                      onClick={() => handleClear(p.id)}
-                      className="w-7 h-7 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all flex items-center justify-center text-xs"
-                      title="Priority সরান"
-                    >✕</button>
-                  )}
                 </div>
               </div>
             )
@@ -246,7 +296,7 @@ export default function AdminPriorityPage() {
             disabled={saving}
             className="flex items-center gap-2 bg-bc-blue hover:bg-bc-blue/80 disabled:opacity-50 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all"
           >
-            {saving ? '⏳ সেভ হচ্ছে...' : saved ? '✅ সেভ হয়েছে' : '💾 সেভ করুন'}
+            {saving ? '⏳ Saving...' : saved ? '✅ Saved' : '💾 Save'}
           </button>
         </div>
       )}
