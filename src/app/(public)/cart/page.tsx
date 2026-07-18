@@ -88,7 +88,7 @@ export default function CartPage() {
             })}
           </div>
 
-          {/* Table */}
+          {/* Table — desktop/tablet (≥768px) */}
           {loading ? (
             <div className="space-y-2">{[...Array(4)].map((_, i) => <div key={i} className="shimmer h-14 rounded-xl" />)}</div>
           ) : filtered.length === 0 ? (
@@ -97,52 +97,83 @@ export default function CartPage() {
               <p>No products found in this category</p>
             </div>
           ) : (
-            <div className="bg-bc-card border border-bc-border rounded-2xl overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm table-fixed">
-                  <colgroup>
-                    <col style={{ width: '58%' }} />
-                    <col style={{ width: '18%' }} />
-                    <col style={{ width: '14%' }} />
-                    <col style={{ width: '10%' }} />
-                  </colgroup>
-                  <thead>
-                    <tr className="border-b border-bc-border">
-                      {['Product', 'Category', 'Price', 'Actions'].map(h => (
-                        <th key={h} className="text-left text-xs text-slate-500 font-medium px-4 py-3 whitespace-nowrap">{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-bc-border/50">
-                    {filtered.map(p => (
-                      <tr key={p.id} className="hover:bg-bc-border/20 transition-colors">
-                        <td className="px-4 py-3 min-w-0">
-                          <div className="font-medium text-white text-sm break-words">{p.name}</div>
-                          {p.name_bn && (
-                            <div className="text-slate-400 text-xs mt-0.5 break-words line-clamp-2">{p.name_bn}</div>
-                          )}
-                          {p.specs && (
-                            <div className="text-slate-500 text-xs mt-0.5 truncate">{p.specs}</div>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE[p.category]}`}>
-                            {CATS.find(c => c.v === p.category)?.l ?? p.category}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 font-semibold text-bc-cyan whitespace-nowrap">{p.price ?? '—'}</td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <button onClick={() => del(p.id)}
-                            className="p-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all text-xs">
-                            🗑️
-                          </button>
-                        </td>
+            <>
+              <div className="hidden md:block bg-bc-card border border-bc-border rounded-2xl overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm table-fixed">
+                    <colgroup>
+                      <col style={{ width: '58%' }} />
+                      <col style={{ width: '18%' }} />
+                      <col style={{ width: '14%' }} />
+                      <col style={{ width: '10%' }} />
+                    </colgroup>
+                    <thead>
+                      <tr className="border-b border-bc-border">
+                        {['Product', 'Category', 'Price', 'Actions'].map(h => (
+                          <th key={h} className="text-left text-xs text-slate-500 font-medium px-4 py-3 whitespace-nowrap">{h}</th>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-bc-border/50">
+                      {filtered.map(p => (
+                        <tr key={p.id} className="hover:bg-bc-border/20 transition-colors">
+                          <td className="px-4 py-3 min-w-0">
+                            <div className="font-medium text-white text-sm break-words">{p.name}</div>
+                            {p.name_bn && (
+                              <div className="text-slate-400 text-xs mt-0.5 break-words line-clamp-2">{p.name_bn}</div>
+                            )}
+                            {p.specs && (
+                              <div className="text-slate-500 text-xs mt-0.5 truncate">{p.specs}</div>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE[p.category]}`}>
+                              {CATS.find(c => c.v === p.category)?.l ?? p.category}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 font-semibold text-bc-cyan whitespace-nowrap">{p.price ?? '—'}</td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <button onClick={() => del(p.id)}
+                              className="p-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all text-xs">
+                              🗑️
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+
+              {/* Card list — mobile (<768px) */}
+              <div className="md:hidden space-y-3">
+                {filtered.map(p => (
+                  <div key={p.id} className="bg-bc-card border border-bc-border rounded-2xl p-4">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium text-white text-sm break-words">{p.name}</div>
+                        {p.name_bn && (
+                          <div className="text-slate-400 text-xs mt-0.5 break-words line-clamp-2">{p.name_bn}</div>
+                        )}
+                        {p.specs && (
+                          <div className="text-slate-500 text-xs mt-0.5 truncate">{p.specs}</div>
+                        )}
+                      </div>
+                      <button onClick={() => del(p.id)}
+                        className="shrink-0 p-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all text-xs">
+                        🗑️
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 pt-2 border-t border-bc-border/50">
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE[p.category]}`}>
+                        {CATS.find(c => c.v === p.category)?.l ?? p.category}
+                      </span>
+                      <span className="font-semibold text-bc-cyan text-sm">{p.price ?? '—'}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </>
       )}
