@@ -40,6 +40,7 @@ export default function AdminProductsPage() {
   const [saving, setSaving]     = useState(false)
   const [err, setErr]           = useState('')
   const [catFilter, setCatFilter] = useState('all')
+  const [quickView, setQuickView] = useState<Product | null>(null)
 
   const descRef = useAutoResize(form.name_bn ?? '')
 
@@ -134,7 +135,7 @@ export default function AdminProductsPage() {
         ))}
       </div>
 
-      {/* Table */}
+      {/* Table — desktop/tablet (≥768px) */}
       {loading ? (
         <div className="space-y-2">{[...Array(5)].map((_, i) => <div key={i} className="shimmer h-14 rounded-xl" />)}</div>
       ) : filtered.length === 0 ? (
@@ -143,76 +144,151 @@ export default function AdminProductsPage() {
           <p>No products found</p>
         </div>
       ) : (
-        <div className="bg-bc-card border border-bc-border rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm table-fixed">
-              <colgroup>
-                <col style={{ width: '42%' }} />
-                <col style={{ width: '13%' }} />
-                <col style={{ width: '12%' }} />
-                <col style={{ width: '11%' }} />
-                <col style={{ width: '11%' }} />
-                <col style={{ width: '11%' }} />
-              </colgroup>
-              <thead>
-                <tr className="border-b border-bc-border">
-                  {['Product', 'Category', 'Price', 'Stock', 'Featured', 'Actions'].map(h => (
-                    <th key={h} className="text-left text-xs text-slate-500 font-medium px-4 py-3 whitespace-nowrap">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-bc-border/50">
-                {filtered.map(p => (
-                  <tr key={p.id} className="hover:bg-bc-border/20 transition-colors">
-                    {/* Product column — fixed max width, text wraps/truncates */}
-                    <td className="px-4 py-3 min-w-0">
-                      <div className="font-medium text-white text-sm break-words">{p.name}</div>
-                      {p.name_bn && (
-                        <div className="text-slate-400 text-xs mt-0.5 break-words line-clamp-2">{p.name_bn}</div>
-                      )}
-                      {p.specs && (
-                        <div className="text-slate-500 text-xs mt-0.5 truncate">{p.specs}</div>
-                      )}
-                    </td>
-                    {/* Category column — fixed, never wraps */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE[p.category]}`}>
-                        {CATS.find(c => c.v === p.category)?.l ?? p.category}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-semibold text-bc-cyan whitespace-nowrap">{p.price ?? '—'}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <button onClick={() => toggleStock(p.id, !p.in_stock)}
-                        className={`text-xs font-medium px-2.5 py-1 rounded-full border transition-all ${
-                          p.in_stock ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-red-500/15 text-red-400 border-red-500/30'
-                        }`}>
-                        {p.in_stock ? '✓ In Stock' : '✗ Out'}
-                      </button>
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <button onClick={() => toggleFeatured(p.id, !p.featured)}
-                        className={`text-xs px-2.5 py-1 rounded-full border transition-all ${
-                          p.featured ? 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30' : 'bg-bc-surface text-slate-500 border-bc-border'
-                        }`}>
-                        {p.featured ? '⭐ Yes' : '—'}
-                      </button>
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="flex items-center gap-1.5">
-                        <button onClick={() => openEdit(p)}
-                          className="p-1.5 rounded-lg bg-bc-blue/10 border border-bc-blue/25 text-bc-blue hover:bg-bc-blue/20 transition-all text-xs">
-                          ✏️
-                        </button>
-                        <button onClick={() => del(p.id)}
-                          className="p-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all text-xs">
-                          🗑️
-                        </button>
-                      </div>
-                    </td>
+        <>
+          <div className="hidden md:block bg-bc-card border border-bc-border rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm table-fixed">
+                <colgroup>
+                  <col style={{ width: '42%' }} />
+                  <col style={{ width: '13%' }} />
+                  <col style={{ width: '12%' }} />
+                  <col style={{ width: '11%' }} />
+                  <col style={{ width: '11%' }} />
+                  <col style={{ width: '11%' }} />
+                </colgroup>
+                <thead>
+                  <tr className="border-b border-bc-border">
+                    {['Product', 'Category', 'Price', 'Stock', 'Featured', 'Actions'].map(h => (
+                      <th key={h} className="text-left text-xs text-slate-500 font-medium px-4 py-3 whitespace-nowrap">{h}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-bc-border/50">
+                  {filtered.map(p => (
+                    <tr key={p.id} className="hover:bg-bc-border/20 transition-colors">
+                      {/* Product column — fixed max width, text wraps/truncates */}
+                      <td className="px-4 py-3 min-w-0">
+                        <div className="font-medium text-white text-sm break-words">{p.name}</div>
+                        {p.name_bn && (
+                          <div className="text-slate-400 text-xs mt-0.5 break-words line-clamp-2">{p.name_bn}</div>
+                        )}
+                        {p.specs && (
+                          <div className="text-slate-500 text-xs mt-0.5 truncate">{p.specs}</div>
+                        )}
+                      </td>
+                      {/* Category column — fixed, never wraps */}
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE[p.category]}`}>
+                          {CATS.find(c => c.v === p.category)?.l ?? p.category}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 font-semibold text-bc-cyan whitespace-nowrap">{p.price ?? '—'}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <button onClick={() => toggleStock(p.id, !p.in_stock)}
+                          className={`text-xs font-medium px-2.5 py-1 rounded-full border transition-all ${
+                            p.in_stock ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-red-500/15 text-red-400 border-red-500/30'
+                          }`}>
+                          {p.in_stock ? '✓ In Stock' : '✗ Out'}
+                        </button>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <button onClick={() => toggleFeatured(p.id, !p.featured)}
+                          className={`text-xs px-2.5 py-1 rounded-full border transition-all ${
+                            p.featured ? 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30' : 'bg-bc-surface text-slate-500 border-bc-border'
+                          }`}>
+                          {p.featured ? '⭐ Yes' : '—'}
+                        </button>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5">
+                          <button onClick={() => openEdit(p)}
+                            className="p-1.5 rounded-lg bg-bc-blue/10 border border-bc-blue/25 text-bc-blue hover:bg-bc-blue/20 transition-all text-xs">
+                            ✏️
+                          </button>
+                          <button onClick={() => del(p.id)}
+                            className="p-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all text-xs">
+                            🗑️
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Name-only row list — mobile (<768px), tap to open quick view */}
+          <div className="md:hidden bg-bc-card border border-bc-border rounded-2xl divide-y divide-bc-border/50 overflow-hidden">
+            {filtered.map(p => (
+              <button
+                key={p.id}
+                onClick={() => setQuickView(p)}
+                className="w-full text-left px-4 py-3 hover:bg-bc-border/20 transition-colors"
+              >
+                <span className="text-white text-sm font-medium leading-snug">{p.name}</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Mobile quick-view modal — Name / Category+Price / Stock+Featured / Edit+Delete */}
+      {quickView && (
+        <div className="md:hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setQuickView(null)}>
+          <div
+            className="bg-bc-card border border-bc-border rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md p-5 space-y-3"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="text-white font-semibold text-sm leading-snug">{quickView.name}</h3>
+              <button onClick={() => setQuickView(null)} className="text-slate-500 hover:text-white text-lg leading-none shrink-0">✕</button>
+            </div>
+
+            <div className="flex items-center justify-between gap-2">
+              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE[quickView.category]}`}>
+                {CATS.find(c => c.v === quickView.category)?.l ?? quickView.category}
+              </span>
+              <span className="font-semibold text-bc-cyan text-sm">{quickView.price ?? '—'}</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  const val = !quickView.in_stock
+                  toggleStock(quickView.id, val)
+                  setQuickView({ ...quickView, in_stock: val })
+                }}
+                className={`flex-1 text-xs font-medium px-2.5 py-2 rounded-full border transition-all ${
+                  quickView.in_stock ? 'bg-green-500/15 text-green-400 border-green-500/30' : 'bg-red-500/15 text-red-400 border-red-500/30'
+                }`}>
+                {quickView.in_stock ? '✓ In Stock' : '✗ Out'}
+              </button>
+              <button
+                onClick={() => {
+                  const val = !quickView.featured
+                  toggleFeatured(quickView.id, val)
+                  setQuickView({ ...quickView, featured: val })
+                }}
+                className={`flex-1 text-xs px-2.5 py-2 rounded-full border transition-all ${
+                  quickView.featured ? 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30' : 'bg-bc-surface text-slate-500 border-bc-border'
+                }`}>
+                {quickView.featured ? '⭐ Featured' : '— Not Featured'}
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2 pt-1">
+              <button
+                onClick={() => { setQuickView(null); openEdit(quickView) }}
+                className="flex-1 flex items-center justify-center gap-1.5 p-2 rounded-lg bg-bc-blue/10 border border-bc-blue/25 text-bc-blue hover:bg-bc-blue/20 transition-all text-xs font-medium">
+                ✏️ Edit
+              </button>
+              <button
+                onClick={() => { setQuickView(null); del(quickView.id) }}
+                className="flex-1 flex items-center justify-center gap-1.5 p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all text-xs font-medium">
+                🗑️ Delete
+              </button>
+            </div>
           </div>
         </div>
       )}
