@@ -50,12 +50,12 @@ function DeveloperModal({ onClose }: { onClose: () => void }) {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-bc-border bg-gradient-to-r from-bc-blue/10 to-bc-cyan/5">
-          <h2 className="font-outfit font-bold text-white text-base">
+          <h2 className="font-outfit font-bold text-bc-text-dark text-base">
             🌐 Developer Information
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-bc-text-dark hover:bg-black/5 transition-all"
             aria-label="Close"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -68,16 +68,16 @@ function DeveloperModal({ onClose }: { onClose: () => void }) {
         <div className="px-6 py-5 space-y-5">
           {/* Intro */}
           <div className="space-y-1.5">
-            <p className="text-slate-300 text-sm">Hi there!</p>
-            <p className="text-white font-semibold text-sm">
+            <p className="text-slate-600 text-sm">Hi there!</p>
+            <p className="text-bc-text-dark font-semibold text-sm">
               This is{' '}
               <span className="gradient-text">Md. Toushif Hossain Johan.</span>
             </p>
-            <p className="text-slate-300 text-sm">
+            <p className="text-slate-600 text-sm">
               I am a Full-Stack{' '}
               <span className="text-bc-cyan font-medium">'AI'</span> Web Developer.
             </p>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <p className="text-slate-500 text-sm leading-relaxed">
               I focus on creating high-performance and scalable web applications.
             </p>
           </div>
@@ -86,7 +86,7 @@ function DeveloperModal({ onClose }: { onClose: () => void }) {
 
           {/* Tech stack */}
           <div>
-            <p className="text-white text-sm font-semibold mb-2.5">
+            <p className="text-bc-text-dark text-sm font-semibold mb-2.5">
               🛠️ Technologies used for this project:
             </p>
             <div className="flex flex-wrap gap-2">
@@ -105,7 +105,7 @@ function DeveloperModal({ onClose }: { onClose: () => void }) {
 
           {/* Connect */}
           <div>
-            <p className="text-white text-sm font-semibold mb-3">
+            <p className="text-bc-text-dark text-sm font-semibold mb-3">
               📬 Let's Connect for Future Projects:
             </p>
             <div className="space-y-2.5">
@@ -121,7 +121,7 @@ function DeveloperModal({ onClose }: { onClose: () => void }) {
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white text-xs font-medium">LinkedIn</p>
+                  <p className="text-bc-text-dark text-xs font-medium">LinkedIn</p>
                   <p className="text-slate-500 text-xs truncate">md-toushif-b5785636a</p>
                 </div>
                 <svg className="w-3.5 h-3.5 text-slate-600 group-hover:text-bc-blue transition-colors shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -139,7 +139,7 @@ function DeveloperModal({ onClose }: { onClose: () => void }) {
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white text-xs font-medium">Email</p>
+                  <p className="text-bc-text-dark text-xs font-medium">Email</p>
                   <p className="text-slate-500 text-xs truncate">toushifjohan@gmail.com</p>
                 </div>
                 <svg className="w-3.5 h-3.5 text-slate-600 group-hover:text-bc-blue transition-colors shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -186,11 +186,11 @@ export default function Footer() {
                   <img src="/logo.png" alt="Bangalee Computers Logo" className="w-full h-full object-contain" />
                 </div>
                 <div>
-                  <div className="font-bold text-white">Bangalee Computers</div>
+                  <div className="font-bold text-bc-text-dark">Bangalee Computers</div>
                   <div className="bengali text-bc-cyan text-xs">বাঙালী কম্পিউটার্স</div>
                 </div>
               </div>
-              <p className="bengali text-slate-400 text-sm leading-relaxed">
+              <p className="bengali text-slate-500 text-sm leading-relaxed">
                 খুলনার বিশ্বস্ত কম্পিউটার ও ল্যাপটপ শপ। জাপান/সিঙ্গাপুর আমদানিকৃত রিফার্বিশড ল্যাপটপ এবং নতুন ল্যাপটপের জন্য আমাদের সাথে যোগাযোগ করুন।
               </p>
               <div className="flex items-center gap-3">
@@ -224,11 +224,11 @@ export default function Footer() {
 
             {/* Quick Links */}
             <div>
-              <h3 className="text-white font-semibold mb-4 text-sm tracking-widest uppercase">Quick Links</h3>
+              <h3 className="text-bc-text-dark font-semibold mb-4 text-sm tracking-widest uppercase">Quick Links</h3>
               <ul className="space-y-2">
                 {NAV_LINKS.map(l => (
                   <li key={l.href}>
-                    <Link href={l.href} className="text-slate-400 hover:text-bc-cyan text-sm transition-colors flex items-center gap-1.5">
+                    <Link href={l.href} className="text-slate-500 hover:text-bc-blue text-sm transition-colors flex items-center gap-1.5">
                       <span className="text-bc-blue/60">›</span>
                       {l.labelEn}
                       <span className="bengali text-slate-600 text-xs">({l.label})</span>
@@ -238,7 +238,7 @@ export default function Footer() {
                 <li>
                   <button
                     onClick={() => setDevModal(true)}
-                    className="text-slate-400 hover:text-bc-cyan text-sm transition-colors flex items-center gap-1.5 w-full text-left group"
+                    className="text-slate-500 hover:text-bc-blue text-sm transition-colors flex items-center gap-1.5 w-full text-left group"
                   >
                     <span className="text-bc-blue/60">›</span>
                     Developer Info
@@ -252,9 +252,9 @@ export default function Footer() {
 
             {/* Contact */}
             <div>
-              <h3 className="text-white font-semibold mb-4 text-sm tracking-widest uppercase">Contact</h3>
+              <h3 className="text-bc-text-dark font-semibold mb-4 text-sm tracking-widest uppercase">Contact</h3>
               <ul className="space-y-3 text-sm">
-                <li className="flex items-start gap-2 text-slate-400">
+                <li className="flex items-start gap-2 text-slate-500">
                   <svg className="w-4 h-4 text-bc-blue mt-0.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -262,7 +262,7 @@ export default function Footer() {
                   <span className="bengali leading-relaxed">{BUSINESS.addressBn}</span>
                 </li>
                 <li>
-                  <a href={`tel:${BUSINESS.phone1}`} className="flex items-center gap-2 text-slate-400 hover:text-bc-cyan transition-colors">
+                  <a href={`tel:${BUSINESS.phone1}`} className="flex items-center gap-2 text-slate-500 hover:text-bc-blue transition-colors">
                     <svg className="w-4 h-4 text-bc-blue shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
@@ -270,7 +270,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href={`tel:${BUSINESS.phone2}`} className="flex items-center gap-2 text-slate-400 hover:text-bc-cyan transition-colors">
+                  <a href={`tel:${BUSINESS.phone2}`} className="flex items-center gap-2 text-slate-500 hover:text-bc-blue transition-colors">
                     <svg className="w-4 h-4 text-bc-blue shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
@@ -282,9 +282,9 @@ export default function Footer() {
 
             {/* Business Hours */}
             <div>
-              <h3 className="text-white font-semibold mb-4 text-sm tracking-widest uppercase">Business Hours</h3>
+              <h3 className="text-bc-text-dark font-semibold mb-4 text-sm tracking-widest uppercase">Business Hours</h3>
               <ul className="space-y-2 text-sm">
-                <li className="bengali text-slate-300">শনি – বৃহস্পতি: সকাল ১০:০০ – রাত ১০:০০</li>
+                <li className="bengali text-slate-600">শনি – বৃহস্পতি: সকাল ১০:০০ – রাত ১০:০০</li>
                 <li className="bengali text-red-400 font-medium">🚫 শুক্রবার: বন্ধ</li>
               </ul>
               <div className="mt-4 pt-4 border-t border-bc-border">
