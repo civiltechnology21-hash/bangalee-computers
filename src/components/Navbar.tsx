@@ -49,7 +49,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur-md"
-      style={{ backgroundColor: 'rgba(255,255,255,0.92)', borderBottom: '1px solid #E2E8F0' }}>
+      style={{ backgroundColor: 'rgba(14,23,23,0.92)', borderBottom: '1px solid #1E2E2D' }}>
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
         {/* Logo */}
@@ -60,8 +60,8 @@ export default function Navbar() {
             className="w-9 h-9 rounded-lg object-cover group-hover:scale-110 transition-transform shadow-lg"
           />
           <div className="leading-none">
-            <div className="font-outfit font-bold text-sm tracking-wide" style={{ color: '#0F172A' }}>Bangalee</div>
-            <div className="bengali text-xs font-medium" style={{ color: '#2563EB' }}>কম্পিউটার্স</div>
+            <div className="font-outfit font-bold text-sm tracking-wide" style={{ color: '#f8fafc' }}>Bangalee</div>
+            <div className="bengali text-xs font-medium" style={{ color: '#FFBF00' }}>কম্পিউটার্স</div>
           </div>
         </Link>
 
@@ -74,18 +74,18 @@ export default function Navbar() {
               className="px-3 py-1.5 rounded-md text-sm font-medium transition-all"
               style={
                 pathname === l.href
-                  ? { color: '#2563EB', backgroundColor: 'rgba(37,99,235,0.08)' }
-                  : { color: '#475569' }
+                  ? { color: '#FFBF00', backgroundColor: 'rgba(255,191,0,0.10)' }
+                  : { color: '#D1D5DB' }
               }
               onMouseEnter={e => {
                 if (pathname !== l.href) {
-                  (e.currentTarget as HTMLElement).style.color = '#2563EB'
-                  ;(e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(37,99,235,0.05)'
+                  (e.currentTarget as HTMLElement).style.color = '#FFBF00'
+                  ;(e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,191,0,0.06)'
                 }
               }}
               onMouseLeave={e => {
                 if (pathname !== l.href) {
-                  (e.currentTarget as HTMLElement).style.color = '#475569'
+                  (e.currentTarget as HTMLElement).style.color = '#D1D5DB'
                   ;(e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
                 }
               }}
@@ -102,13 +102,13 @@ export default function Navbar() {
             href="/cart"
             aria-label="My Cart"
             className="relative hidden md:flex items-center justify-center w-10 h-10 rounded-lg transition-all hover:scale-105"
-            style={{ color: '#475569' }}
+            style={{ color: '#D1D5DB' }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.color = '#2563EB'
-              ;(e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(37,99,235,0.05)'
+              (e.currentTarget as HTMLElement).style.color = '#FFBF00'
+              ;(e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,191,0,0.06)'
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.color = '#475569'
+              (e.currentTarget as HTMLElement).style.color = '#D1D5DB'
               ;(e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
             }}
           >
@@ -116,7 +116,7 @@ export default function Navbar() {
             {cartCount > 0 && (
               <span
                 className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full text-[10px] font-bold text-white"
-                style={{ backgroundColor: '#2563EB', color: '#FFFFFF' }}
+                style={{ backgroundColor: '#FFBF00', color: '#111827' }}
               >
                 {cartCount > 99 ? '99+' : cartCount}
               </span>
@@ -140,7 +140,7 @@ export default function Navbar() {
           <button
             onClick={() => setOpen(!open)}
             className="md:hidden p-2 rounded-md transition-colors"
-            style={{ color: '#475569' }}
+            style={{ color: '#D1D5DB' }}
             aria-label="Toggle menu"
           >
             <div className="w-5 h-4 flex flex-col justify-between">
@@ -155,7 +155,7 @@ export default function Navbar() {
       {/* Mobile menu */}
       {open && (
         <div className="md:hidden px-4 py-3 space-y-1"
-          style={{ borderTop: '1px solid #E2E8F0', backgroundColor: '#FFFFFF' }}>
+          style={{ borderTop: '1px solid #1E2E2D', backgroundColor: '#122020' }}>
           {NAV_LINKS.map(l => (
             <Link
               key={l.href}
@@ -164,11 +164,11 @@ export default function Navbar() {
               className="block px-3 py-2.5 rounded-md text-sm font-medium transition-all"
               style={
                 pathname === l.href
-                  ? { color: '#2563EB', backgroundColor: 'rgba(37,99,235,0.08)' }
-                  : { color: '#475569' }
+                  ? { color: '#FFBF00', backgroundColor: 'rgba(255,191,0,0.10)' }
+                  : { color: '#D1D5DB' }
               }
             >
-              {l.labelEn} <span className="bengali ml-1" style={{ color: '#2563EB', opacity: 0.6 }}>{l.label}</span>
+              {l.labelEn} <span className="bengali ml-1" style={{ color: '#FFBF00', opacity: 0.6 }}>{l.label}</span>
             </Link>
           ))}
 
@@ -177,7 +177,7 @@ export default function Navbar() {
             href="/cart"
             onClick={() => setOpen(false)}
             className="flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-medium transition-all"
-            style={{ color: '#475569' }}
+            style={{ color: '#D1D5DB' }}
           >
             <span className="flex items-center gap-2">
               <TrolleyIcon className="w-4 h-4" />
@@ -186,7 +186,7 @@ export default function Navbar() {
             {cartCount > 0 && (
               <span
                 className="min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full text-[10px] font-bold"
-                style={{ backgroundColor: '#2563EB', color: '#FFFFFF' }}
+                style={{ backgroundColor: '#FFBF00', color: '#111827' }}
               >
                 {cartCount > 99 ? '99+' : cartCount}
               </span>
