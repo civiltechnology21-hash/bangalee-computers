@@ -240,10 +240,10 @@ function Carousel({ products }: CarouselProps) {
           aria-label="Previous"
           className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 -translate-x-3
             w-10 h-10 rounded-full bg-bc-card border border-bc-border
-            flex items-center justify-center text-bc-text-dark
-            hover:bg-bc-blue hover:border-bc-blue hover:text-white transition-all shadow-xl
+            flex items-center justify-center text-white
+            hover:bg-bc-blue hover:border-bc-blue transition-all shadow-xl
             focus:opacity-100 ${bp === 'mobile' ? 'opacity-100' : 'opacity-0 group-hover/carousel:opacity-100'}`}
-          style={{ boxShadow: '0 4px 16px rgba(15,23,42,0.15)' }}
+          style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -258,10 +258,10 @@ function Carousel({ products }: CarouselProps) {
           aria-label="Next"
           className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 translate-x-3
             w-10 h-10 rounded-full bg-bc-card border border-bc-border
-            flex items-center justify-center text-bc-text-dark
-            hover:bg-bc-blue hover:border-bc-blue hover:text-white transition-all shadow-xl
+            flex items-center justify-center text-white
+            hover:bg-bc-blue hover:border-bc-blue transition-all shadow-xl
             focus:opacity-100 ${bp === 'mobile' ? 'opacity-100' : 'opacity-0 group-hover/carousel:opacity-100'}`}
-          style={{ boxShadow: '0 4px 16px rgba(15,23,42,0.15)' }}
+          style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -404,7 +404,7 @@ function FeaturedProducts() {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <div className="text-5xl mb-4">🛒</div>
-        <p className="bengali text-slate-500 text-base mb-1">এই মুহূর্তে কোনো featured পণ্য নেই</p>
+        <p className="bengali text-slate-400 text-base mb-1">এই মুহূর্তে কোনো featured পণ্য নেই</p>
         <p className="bengali text-slate-500 text-sm mb-6">সব পণ্য দেখতে নিচের বোতামে ক্লিক করুন</p>
         <Link
           href="/products"
@@ -445,12 +445,12 @@ export default function HomePage() {
               <span className="w-2 h-2 rounded-full bg-bc-cyan animate-pulse" />
               Khulna's Trusted Tech Partner
             </div>
-            <h1 className="font-outfit font-extrabold text-5xl sm:text-6xl lg:text-7xl text-bc-text-dark leading-[1.05] mb-4 fade-up-d1">
+            <h1 className="font-outfit font-extrabold text-5xl sm:text-6xl lg:text-7xl text-white leading-[1.05] mb-4 fade-up-d1">
               Best Laptops
               <br />
               <span className="gradient-text">Best Prices</span>
             </h1>
-            <p className="bengali text-xl sm:text-2xl text-slate-600 mb-2 fade-up-d1">
+            <p className="bengali text-xl sm:text-2xl text-slate-300 mb-2 fade-up-d1">
               বাঙালী কম্পিউটার্স — খুলনার বিশ্বস্ত ল্যাপটপ শপ
             </p>
             <p className="bengali text-slate-500 text-base mb-8 fade-up-d2">
@@ -469,7 +469,7 @@ export default function HomePage() {
               </Link>
               <a
                 href={`tel:${BUSINESS.phone1}`}
-                className="inline-flex items-center gap-2 bg-bc-surface border border-bc-border hover:border-bc-blue/50 text-bc-text-dark font-semibold px-7 py-3.5 rounded-xl transition-all hover:scale-105"
+                className="inline-flex items-center gap-2 bg-bc-surface border border-bc-border hover:border-bc-blue/50 text-white font-semibold px-7 py-3.5 rounded-xl transition-all hover:scale-105"
               >
                 <svg className="w-5 h-5 text-bc-blue" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -479,11 +479,11 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-wrap gap-3 mt-5 fade-up-d4">
-              <a href={`tel:${BUSINESS.phone1}`} className="bengali text-bc-blue text-sm font-medium hover:text-bc-blue-dark transition-colors">
+              <a href={`tel:${BUSINESS.phone1}`} className="bengali text-bc-cyan text-sm font-medium hover:text-white transition-colors">
                 📞 {BUSINESS.phone1}
               </a>
               <span className="text-bc-border">|</span>
-              <a href={`tel:${BUSINESS.phone2}`} className="bengali text-bc-blue text-sm font-medium hover:text-bc-blue-dark transition-colors">
+              <a href={`tel:${BUSINESS.phone2}`} className="bengali text-bc-cyan text-sm font-medium hover:text-white transition-colors">
                 📞 {BUSINESS.phone2}
               </a>
             </div>
@@ -504,7 +504,7 @@ export default function HomePage() {
           ].map((s, i) => (
             <div key={i} className="bg-bc-card border border-bc-border rounded-2xl p-4 text-center blue-glow">
               <div className="text-2xl mb-1">{s.icon}</div>
-              <div className="font-bold text-xl text-bc-text-dark">{s.value}</div>
+              <div className="font-bold text-xl text-white">{s.value}</div>
               <div className="text-slate-500 text-xs mt-0.5">{s.label}</div>
             </div>
           ))}
@@ -525,16 +525,16 @@ export default function HomePage() {
               <div className="inline-flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 rounded-full px-3 py-1 text-amber-400 text-xs font-bold mb-3">
                 ✈️ Japan / Singapore Imported
               </div>
-              <h2 className="font-outfit font-bold text-2xl sm:text-3xl text-bc-text-dark mb-2">
+              <h2 className="font-outfit font-bold text-2xl sm:text-3xl text-white mb-2">
                 রিফার্বিশড ল্যাপটপ
               </h2>
-              <p className="bengali text-slate-500 text-sm max-w-md leading-relaxed">
+              <p className="bengali text-slate-400 text-sm max-w-md leading-relaxed">
                 জাপান ও সিঙ্গাপুর থেকে আমদানিকৃত উচ্চমানের রিফার্বিশড ল্যাপটপ। কম দামে প্রিমিয়াম পারফরম্যান্স।
               </p>
             </div>
             <Link
               href="/products?cat=used"
-              className="shrink-0 bg-amber-500 hover:bg-amber-400 text-white font-bold px-6 py-3 rounded-xl transition-all hover:scale-105 text-sm"
+              className="shrink-0 bg-amber-500 hover:bg-amber-400 text-bc-bg font-bold px-6 py-3 rounded-xl transition-all hover:scale-105 text-sm"
             >
               দেখুন →
             </Link>
@@ -546,10 +546,10 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 mt-16">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="font-outfit font-bold text-2xl sm:text-3xl text-bc-text-dark">
+            <h2 className="font-outfit font-bold text-2xl sm:text-3xl text-white">
               Featured Products
             </h2>
-            <p className="bengali text-slate-500 text-sm mt-1">সেরা পণ্য সমূহ</p>
+            <p className="bengali text-slate-400 text-sm mt-1">সেরা পণ্য সমূহ</p>
           </div>
           <Link href="/products" className="text-bc-blue hover:text-bc-cyan text-sm font-medium transition-colors flex items-center gap-1">
             সব দেখুন <span>→</span>
@@ -564,8 +564,8 @@ export default function HomePage() {
       {/* ─── SERVICES ───────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 mt-20">
         <div className="text-center mb-10">
-          <h2 className="font-outfit font-bold text-2xl sm:text-3xl text-bc-text-dark mb-2">Our Services</h2>
-          <p className="bengali text-slate-500">আমাদের সার্ভিস সমূহ</p>
+          <h2 className="font-outfit font-bold text-2xl sm:text-3xl text-white mb-2">Our Services</h2>
+          <p className="bengali text-slate-400">আমাদের সার্ভিস সমূহ</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {SERVICES.map((s, i) => (
@@ -574,8 +574,8 @@ export default function HomePage() {
                 {s.icon}
               </div>
               <div>
-                <h3 className="font-semibold text-bc-text-dark text-sm mb-1">{s.title}</h3>
-                <p className="bengali text-slate-500 text-xs leading-relaxed">{s.desc}</p>
+                <h3 className="font-semibold text-white text-sm mb-1">{s.title}</h3>
+                <p className="bengali text-slate-400 text-xs leading-relaxed">{s.desc}</p>
               </div>
             </div>
           ))}
@@ -597,10 +597,10 @@ export default function HomePage() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-32 bg-bc-blue/15 rounded-full blur-3xl" />
           </div>
           <div className="relative">
-            <h2 className="font-outfit font-bold text-2xl sm:text-3xl text-bc-text-dark mb-2">
+            <h2 className="font-outfit font-bold text-2xl sm:text-3xl text-white mb-2">
               আজই আমাদের সাথে যোগাযোগ করুন
             </h2>
-            <p className="bengali text-slate-500 text-sm mb-6 max-w-lg mx-auto">
+            <p className="bengali text-slate-400 text-sm mb-6 max-w-lg mx-auto">
               {BUSINESS.addressBn}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
@@ -617,7 +617,7 @@ export default function HomePage() {
               </a>
               <a
                 href={`tel:${BUSINESS.phone1}`}
-                className="flex items-center gap-2 bg-bc-surface border border-bc-border hover:border-bc-blue/50 text-bc-text-dark font-semibold px-6 py-3 rounded-xl transition-all hover:scale-105"
+                className="flex items-center gap-2 bg-bc-surface border border-bc-border hover:border-bc-blue/50 text-white font-semibold px-6 py-3 rounded-xl transition-all hover:scale-105"
               >
                 <svg className="w-5 h-5 text-bc-blue" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
