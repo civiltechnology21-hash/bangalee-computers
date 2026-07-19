@@ -110,7 +110,7 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
       {/* Modal card */}
       <div
         className="relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl overflow-hidden"
-        style={{ backgroundColor: '#162626', border: '1px solid #1E2E2D' }}
+        style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}
         onClick={e => e.stopPropagation()}
       >
         {/* Close button */}
@@ -126,7 +126,7 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
 
         {/* Image area */}
         <div className="relative h-56 sm:h-64 flex items-center justify-center overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #122020 0%, #0E1717 100%)' }}>
+          style={{ background: 'linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%)' }}>
           {product.image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -144,9 +144,9 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
 
           {!product.in_stock && (
             <div className="absolute inset-0 flex items-center justify-center"
-              style={{ backgroundColor: 'rgba(14,23,23,0.75)' }}>
+              style={{ backgroundColor: 'rgba(248,250,252,0.85)' }}>
               <span className="bengali font-bold text-sm px-3 py-1 rounded-full"
-                style={{ color: '#ef4444', backgroundColor: 'rgba(14,23,23,0.85)', border: '1px solid rgba(239,68,68,0.30)' }}>
+                style={{ color: '#ef4444', backgroundColor: '#FFFFFF', border: '1px solid rgba(239,68,68,0.30)' }}>
                 স্টক নেই
               </span>
             </div>
@@ -155,25 +155,25 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
 
         {/* Info */}
         <div className="p-5 sm:p-6">
-          <h3 className="font-semibold text-xl leading-snug mb-3" style={{ color: '#FFBF00' }}>
+          <h3 className="font-semibold text-xl leading-snug mb-3" style={{ color: '#0F172A' }}>
             {product.name}
           </h3>
 
           {product.name_bn && (
-            <p className="bengali text-sm mb-4 whitespace-pre-wrap leading-relaxed" style={{ color: '#D1D5DB', opacity: 0.85 }}>
+            <p className="bengali text-sm mb-4 whitespace-pre-wrap leading-relaxed" style={{ color: '#475569', opacity: 0.9 }}>
               {product.name_bn}
             </p>
           )}
 
           {product.specs && (
-            <p className="text-sm leading-relaxed mb-4" style={{ color: '#D1D5DB', opacity: 0.7 }}>
+            <p className="text-sm leading-relaxed mb-4" style={{ color: '#475569', opacity: 0.8 }}>
               {product.specs}
             </p>
           )}
 
           {product.price && (
             <div className="mb-5">
-              <span className="font-bold text-2xl" style={{ color: '#FFBF00' }}>{product.price}</span>
+              <span className="font-bold text-2xl" style={{ color: '#2563EB' }}>{product.price}</span>
             </div>
           )}
 
@@ -195,16 +195,16 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
               title={saved ? 'কার্ট থেকে সরান' : 'কার্টে সেভ করুন'}
               style={
                 saved
-                  ? { border: '1.5px solid #FFBF00', color: '#FFBF00', backgroundColor: 'rgba(255,191,0,0.10)' }
-                  : { border: '1.5px solid rgba(255,191,0,0.35)', color: '#FFBF00' }
+                  ? { border: '1.5px solid #2563EB', color: '#2563EB', backgroundColor: 'rgba(37,99,235,0.08)' }
+                  : { border: '1.5px solid rgba(37,99,235,0.35)', color: '#2563EB' }
               }
               onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.borderColor = '#FFBF00'
-                ;(e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,191,0,0.08)'
+                (e.currentTarget as HTMLElement).style.borderColor = '#2563EB'
+                ;(e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(37,99,235,0.06)'
               }}
               onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.borderColor = saved ? '#FFBF00' : 'rgba(255,191,0,0.35)'
-                ;(e.currentTarget as HTMLElement).style.backgroundColor = saved ? 'rgba(255,191,0,0.10)' : 'transparent'
+                (e.currentTarget as HTMLElement).style.borderColor = saved ? '#2563EB' : 'rgba(37,99,235,0.35)'
+                ;(e.currentTarget as HTMLElement).style.backgroundColor = saved ? 'rgba(37,99,235,0.08)' : 'transparent'
               }}
             >
               <TrolleyIcon filled={saved} />
@@ -229,12 +229,12 @@ export default function ProductCard({ product }: { product: Product }) {
     <>
       <div
         className="card-hover group relative rounded-2xl overflow-hidden flex flex-col cursor-pointer"
-        style={{ backgroundColor: '#162626', border: '1px solid #1E2E2D' }}
+        style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}
         onClick={() => setExpanded(true)}
       >
         {/* Image area */}
         <div className="relative h-44 flex items-center justify-center overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #122020 0%, #0E1717 100%)' }}>
+          style={{ background: 'linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%)' }}>
           {product.image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -254,9 +254,9 @@ export default function ProductCard({ product }: { product: Product }) {
           {/* Out of stock */}
           {!product.in_stock && (
             <div className="absolute inset-0 flex items-center justify-center"
-              style={{ backgroundColor: 'rgba(14,23,23,0.75)' }}>
+              style={{ backgroundColor: 'rgba(248,250,252,0.85)' }}>
               <span className="bengali font-bold text-sm px-3 py-1 rounded-full"
-                style={{ color: '#ef4444', backgroundColor: 'rgba(14,23,23,0.85)', border: '1px solid rgba(239,68,68,0.30)' }}>
+                style={{ color: '#ef4444', backgroundColor: '#FFFFFF', border: '1px solid rgba(239,68,68,0.30)' }}>
                 স্টক নেই
               </span>
             </div>
@@ -265,12 +265,12 @@ export default function ProductCard({ product }: { product: Product }) {
 
         {/* Info — collapsed: name, specs, price only (no description) */}
         <div className="p-4 flex flex-col flex-1">
-          <h3 className="font-semibold text-base leading-snug mb-1" style={{ color: '#FFBF00' }}>
+          <h3 className="font-semibold text-base leading-snug mb-1" style={{ color: '#0F172A' }}>
             {product.name}
           </h3>
 
           {product.specs && (
-            <p className="text-xs leading-relaxed mb-3 flex-1" style={{ color: '#D1D5DB', opacity: 0.65 }}>
+            <p className="text-xs leading-relaxed mb-3 flex-1" style={{ color: '#475569', opacity: 0.75 }}>
               {product.specs}
             </p>
           )}
@@ -278,7 +278,7 @@ export default function ProductCard({ product }: { product: Product }) {
           {/* Price */}
           {product.price && (
             <div className="mb-3">
-              <span className="font-bold text-lg" style={{ color: '#FFBF00' }}>{product.price}</span>
+              <span className="font-bold text-lg" style={{ color: '#2563EB' }}>{product.price}</span>
             </div>
           )}
 
