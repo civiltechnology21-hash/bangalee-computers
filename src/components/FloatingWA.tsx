@@ -10,7 +10,7 @@ export default function FloatingWA() {
       aria-label="WhatsApp করুন"
     >
       {/* Tooltip */}
-      <span className="bengali opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0 bg-bc-card border border-bc-border text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap">
+      <span className="bengali opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0 bg-bc-card border border-bc-border text-bc-text-dark text-xs font-medium px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap">
         WhatsApp করুন
       </span>
       {/* Button */}
