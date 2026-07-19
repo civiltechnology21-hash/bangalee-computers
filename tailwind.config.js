@@ -11,24 +11,39 @@ module.exports = {
 
       colors: {
         bc: {
-          bg:          '#0E1717',
-          surface:     '#122020',
-          card:        '#162626',
-          border:      '#1E2E2D',
-          gold:        '#FFBF00',
-          'gold-dark': '#cc9900',
-          'gold-light':'#ffda60',
-          blue:        '#2563eb',
-          'blue-light':'#60a5fa',
-          cyan:        '#22d3ee',
-          wa:          '#22c55e',
-          'wa-dark':   '#16a34a',
+          // ── Base surfaces (light theme) ──
+          bg:          '#F8FAFC',   // page background (slate-50)
+          surface:     '#FFFFFF',   // navbar, card, modal
+          'surface-alt':'#F1F5F9',  // footer, alternating sections (slate-100)
+          card:        '#FFFFFF',   // kept for backward-compat with existing classes
+          border:      '#E2E8F0',   // card/section borders (slate-200)
+
+          // ── Blue accent family (primary) ──
+          blue:        '#2563EB',   // primary actions, links, price highlight
+          'blue-dark': '#1D4ED8',   // hero gradient end, hover state
+          'blue-light':'#60A5FA',   // secondary highlight
+          'blue-tint': '#DBEAFE',   // badge bg, soft hover bg
+
+          // ── Legacy "gold" tokens kept but remapped to blue so old classes don't break ──
+          gold:        '#2563EB',
+          'gold-dark': '#1D4ED8',
+          'gold-light':'#60A5FA',
+
+          cyan:        '#0EA5E9',   // kept for compatibility, sky-blue tone
+
+          // ── WhatsApp green — untouched, isolated to CTA/badge use only ──
+          wa:          '#22C55E',
+          'wa-dark':   '#16A34A',
+
+          // ── Status colors — kept as-is ──
           amber:       '#f59e0b',
           red:         '#ef4444',
           purple:      '#a855f7',
-          text:        '#D1D5DB',
-          'text-dark': '#111827',
-          muted:       '#6b7280',
+
+          // ── Text ──
+          text:        '#475569',   // body copy (slate-600)
+          'text-dark': '#0F172A',   // headings (slate-900)
+          muted:       '#64748B',   // secondary/premium gray (slate-500)
         },
       },
 
@@ -38,16 +53,20 @@ module.exports = {
       },
 
       backgroundImage: {
+        // subtle dot-grid instead of the old dark "circuit" look
         'circuit':
-          'linear-gradient(to right, #1E2E2D 1px, transparent 1px),' +
-          'linear-gradient(to bottom, #1E2E2D 1px, transparent 1px),' +
-          'radial-gradient(circle, #FFBF00 1.2px, transparent 1.2px)',
+          'linear-gradient(to right, #E2E8F0 1px, transparent 1px),' +
+          'linear-gradient(to bottom, #E2E8F0 1px, transparent 1px),' +
+          'radial-gradient(circle, #2563EB 1px, transparent 1px)',
 
         'gold-gradient':
-          'linear-gradient(135deg, #FFBF00 0%, #ffda60 100%)',
+          'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+
+        'hero-gradient':
+          'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
 
         'card-gradient':
-          'linear-gradient(145deg, #1a2a2a 0%, #162626 100%)',
+          'linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%)',
       },
 
       backgroundSize: {
@@ -55,12 +74,12 @@ module.exports = {
       },
 
       boxShadow: {
-        'card':        '0 2px 12px rgba(0,0,0,0.40)',
-        'card-hover':  '0 16px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,191,0,0.28)',
-        'gold-soft':   '0 6px 24px rgba(255,191,0,0.30)',
-        'gold-glow':   '0 0 20px rgba(255,191,0,0.25)',
-        'wa-soft':     '0 6px 20px rgba(34,197,94,0.30)',
-        'input-focus': '0 0 0 3px rgba(255,191,0,0.25)',
+        'card':        '0 1px 3px rgba(15,23,42,0.08), 0 1px 2px rgba(15,23,42,0.04)',
+        'card-hover':  '0 12px 28px rgba(15,23,42,0.12), 0 0 0 1px rgba(37,99,235,0.20)',
+        'gold-soft':   '0 6px 20px rgba(37,99,235,0.18)',
+        'gold-glow':   '0 0 16px rgba(37,99,235,0.15)',
+        'wa-soft':     '0 6px 20px rgba(34,197,94,0.28)',
+        'input-focus': '0 0 0 3px rgba(37,99,235,0.18)',
       },
 
       transitionTimingFunction: {
